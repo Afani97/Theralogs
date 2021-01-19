@@ -1,0 +1,89 @@
+{% extends 'theralogs/base.html' %}
+
+{% block content %}
+
+<div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="file-success-msg">
+  <span class="inline-block align-middle mr-8">
+    <b class="capitalize">Hooray!</b> Successfully uploaded audio file!
+  </span>
+</div>
+
+<div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="new-patient-msg">
+  <span class="inline-block align-middle mr-8">
+    <b class="capitalize">Congrats!</b> Successfully added a new patient!
+  </span>
+</div>
+
+<div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="email-sent-msg">
+  <span class="inline-block align-middle mr-8">
+    <b class="capitalize">Awesome!</b> Email is on the way!
+  </span>
+</div>
+
+<form action="new-patient/" method="POST" id="new-patient-form" class="max-w-2xl mx-auto my-10">
+    {% csrf_token %}
+    <div class="flex justify-evenly">
+        <label class="block mb-2 mr-3">
+            <span>Patient Name</span>
+            <input class="tl-input" type="text" id="patient-name" placeholder="Thomas"/>
+        </label>
+        <label class="block mb-2 mr-3">
+            <span>Patient Email</span>
+            <input class="tl-input" type="email" id="patient-email" placeholder="thomas@gmail.com"/>
+        </label>
+        <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new patient</button>
+    </div>
+
+</form>
+
+<form action="file-upload/" method="POST" class="dropzone max-w-2xl mx-auto my-10 rounded border-1 border-gray-200" id="my-dropzone">
+    {% csrf_token %}
+    <div>
+      <label for="selected-patient">Select Patient</label>
+      <div>
+        <select id="selected-patient" name="selected-patient" class="tl-input">
+          {% for patient in patients %}
+          <option value="{{ patient.id }}">{{ patient.name }} - {{patient.email}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="fallback">
+        <input name="file" type="file" multiple />
+    </div>
+</form>
+
+<div class="max-w-3xl mx-auto my-10">
+   <div class="flex justify-between ">
+        <a href="{% url 'filter_main' prev_month %}" class="tl-button">{{prev_month}}</a>
+        <p>{{curr_month | date:"M-Y"}}</p>
+        <a href="{% url 'filter_main' next_month %}" class="tl-button">{{next_month}}</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 gap-3 max-w-3xl mx-auto my-10">
+    {% for key, values in sessions.items %}
+        <div class="w-full rounded-md bg-gray-50">
+            <h1 class="text-xl text-center">{{key | date:"SHORT_DATE_FORMAT"}}</h1>
+            <div class="grid grid-cols-1 gap-3 mx-2 my-2 divide-y-2">
+                {% for v in values %}
+                    <div class="flex justify-between items-center">
+                        <p class="text-black mt-2"> {{v.patient.name}} </p>
+                        {% if v.recording_json %}
+                        <button id="{{v.id}}" class="tl-button send-email-btn h-10 bg-blue-200 text-black hover:bg-blue-400 mt-2">
+                            resend
+                        </button>
+                        {% else %}
+                        <button disabled class="tl-button h-10 bg-gray-200 text-black mt-2 hover:bg-gray-200">
+                            pending
+                        </button>
+                        {% endif %}
+                    </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No entries found for this month</p>
+    {% endfor %}
+</div>
+{% endblock %}

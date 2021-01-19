@@ -1,0 +1,27 @@
+{% extends 'theralogs/base.html' %}
+{% load tl_tags %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto">
+    <h1 class="text-3xl mb-4 dark:text-white">New Patient</h1>
+
+    {% if form.errors %}
+      <p class="text-red-600 font-bold dark:text-red-500">Error creating patient</p>
+    {% endif %}
+
+    <form method="post" class="mb-8 space-y-4" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <label class="block">
+                <span class="text-gray-700">{{ field.label }}:</span>
+                {{ field | addclass:'tl-input'}}
+            </label>
+        {% endfor %}
+        <div class="flex justify-between content-center">
+            <a class="self-center dark:text-white" href="{% url 'profile' %}">Cancel</a>
+            <button class="tl-button" type="submit">Create patient</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "postcss.config.js",
+  "dependencies": {
+    "@tailwindcss/forms": "^0.2.1",
+    "autoprefixer": "^10.2.1",
+    "postcss": "^8.2.4",
+    "postcss-cli": "^8.1.0",
+    "tailwindcss": "^2.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "npx tailwindcss-cli@latest build ./styles.css -o ../static/style.min.css",
+    "clean:css": "cleancss -o ../static/style.min.css ../static/style.min.css",
+    "prod": "NODE_ENV=production npm run build && npm run clean:css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

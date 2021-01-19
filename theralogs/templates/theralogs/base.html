@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="{% static 'style.min.css' %}">
+
+    <!-- dropzone js & css -->
+    <link rel="stylesheet" href="{% static 'dropzone/basic.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dropzone/dropzone.min.css' %}">
+    <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
+
+    <script src="{% static 'main.js' %}" defer></script>
+
+    <title>Theralogs</title>
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'img/favicon.ico' %}" />
+</head>
+<body>
+
+<nav class="mx-8 mb-4 py-4">
+    <div class="flex justify-between">
+        {% if request.user.is_authenticated %}
+            <p class="text-4xl">Theralogs</p>
+            <div class="flex justify-between">
+                <a href="{% url 'home' %}" class="text-base sm:text-xl dark:text-white mr-2">Home</a>
+                <a href="{% url 'profile' %}" class="text-base sm:text-xl dark:text-white mr-2">View Profile</a>
+                <a href="{% url 'logout' %}" class="text-base sm:text-xl dark:text-white">Logout</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
+<div class="main">
+    <div>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% block content %}
+    {% endblock %}
+</div>
+
+{% block js %}
+{% endblock %}
+
+</body>
+</html>

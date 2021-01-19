@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Theralogs Transcript</title>
+  <style type="text/css">
+    .title {
+        text-align: center;
+        color: #59a7ff;
+    }
+
+    .spk_0 {
+        width: 50%;
+        background-color: #ededed;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    .spk_1 {
+        width: 50%;
+        background-color: #a4d5fc;
+        margin-left: 50%;
+        border-radius: 10px;
+        padding: 5px;
+        color: black;
+    }
+
+    .speakers {
+        display: flex;
+        justify-content: space-between;
+    }
+
+  </style>
+</head>
+<body>
+
+<div>
+    <h1 class="title">Transcript</h1>
+    <div class="speakers">
+        <h3>Therapist</h3>
+        <h3>{{date_created | date:"SHORT_DATE_FORMAT"}}</h3>
+        <h3>Patient</h3>
+    </div>
+
+    </div>
+    {% for item in transcript %}
+        <p class="{{ item.speaker }}">
+            {{item.transcript}}
+        </p>
+    {% endfor %}
+
+</body>
+</html>

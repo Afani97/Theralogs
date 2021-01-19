@@ -1,0 +1,5 @@
+.env
+*.rdb
+venv/
+frontend/node_modules/
+.idea/

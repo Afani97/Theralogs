@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    env_file:
+      - .env
+  redis:
+    image: "redis:alpine"
+  worker:
+    build:
+      context: "."
+    command: python manage.py celery_worker
+    depends_on:
+      - web
+      - redis
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+    ports:
+      - 5555:5555
+    depends_on:
+      - worker
