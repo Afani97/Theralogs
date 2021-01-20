@@ -1,7 +1,6 @@
 import json
 import smtplib
 from email.message import EmailMessage
-import stripe
 
 import boto3
 from botocore.config import Config
@@ -9,6 +8,7 @@ from celery import shared_task
 from decouple import config
 
 from theralogs.models import TLSession, Patient
+from theralogs.stripe_manager import stripe_manager
 from theralogs.utils import render_to_pdf, format_transcript
 from theralogsproject.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
@@ -65,20 +65,14 @@ def send_email_transcript(job_name):
     patient_session.save()
 
     total_minutes_of_recording = patient_session.recording_length / 60
-    cost_per_minute = 190  # Should be 19 for prod
-    total_charge = int(total_minutes_of_recording * cost_per_minute)
-    stripe.api_key = config("STRIPE_SECRET")
-    stripe.PaymentIntent.create(
-        amount=total_charge,
-        currency="usd",
-        customer=patient.therapist.stripe_customer_id,
-        payment_method=patient.therapist.stripe_payment_method_id,
-        off_session=True,
-        confirm=True,
+    stripe_manager.charge_customer(
+        recording_time=total_minutes_of_recording, patient=patient
     )
 
     context = patient_session.recording_json
     context["date_created"] = patient_session.created_at
+    context["therapist"] = patient.therapist.name
+    context["patient"] = patient.name
     pdf = render_to_pdf(context)
     msg.add_attachment(
         pdf, maintype="application", subtype="octet-stream", filename="patient.pdf"
@@ -101,6 +95,8 @@ def resend_email_to_patient(session_id):
 
     context = session.recording_json
     context["date_created"] = session.created_at
+    context["therapist"] = session.patient.therapist.name
+    context["patient"] = session.patient.name
     pdf = render_to_pdf(context)
     msg.add_attachment(
         pdf, maintype="application", subtype="octet-stream", filename="patient.pdf"

@@ -1,13 +1,12 @@
-import stripe
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
-from decouple import config
 
 from theralogs.forms import EditProfileForm, UpdatePaymentForm
 from theralogs.models import Therapist
+from theralogs.stripe_manager import stripe_manager
 
 
 @login_required
@@ -48,28 +47,15 @@ def update_payment(request):
     if request.method == "POST":
         payment_form = UpdatePaymentForm(request.POST)
         if payment_form.is_valid():
-            stripe.api_key = config("STRIPE_SECRET")
-            stripe_payment_method = stripe.PaymentMethod.create(
-                type="card",
-                card={
-                    "number": payment_form.cleaned_data.get("card_number"),
-                    "exp_month": payment_form.cleaned_data.get("card_exp_month"),
-                    "exp_year": payment_form.cleaned_data.get("card_exp_year"),
-                    "cvc": payment_form.cleaned_data.get("card_cvc"),
-                },
+            card_dict = {
+                "number": payment_form.cleaned_data.get("card_number"),
+                "exp_month": payment_form.cleaned_data.get("card_exp_month"),
+                "exp_year": payment_form.cleaned_data.get("card_exp_year"),
+                "cvc": payment_form.cleaned_data.get("card_cvc"),
+            }
+            stripe_manager.create_payment_method(
+                therapist=request.user.therapist, card_dict=card_dict
             )
-            therapist = request.user.therapist
-            if therapist.stripe_payment_method_id:
-                stripe.PaymentMethod.detach(
-                    therapist.stripe_payment_method_id,
-                )
-
-            therapist.stripe_payment_method_id = stripe_payment_method["id"]
-            stripe.PaymentMethod.attach(
-                therapist.stripe_payment_method_id,
-                customer=therapist.stripe_customer_id,
-            )
-            therapist.save()
             return redirect("profile")
     context = {"form": payment_form}
     return render(request, "theralogs/profile/update_payment.html", context)

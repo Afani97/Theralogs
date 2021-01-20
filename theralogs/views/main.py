@@ -1,5 +1,4 @@
 import json
-import tempfile
 from collections import OrderedDict
 from datetime import datetime
 
@@ -9,14 +8,11 @@ import requests
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
-from weasyprint import HTML
 
 from theralogsproject.storage_backends import MediaStorage
 from ..models import TLFile, Patient, TLSession
 from ..tasks import generate_transcribe, send_email_transcript, resend_email_to_patient
-from ..utils import render_to_pdf
 
 
 @login_required

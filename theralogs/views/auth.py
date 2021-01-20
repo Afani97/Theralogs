@@ -3,11 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.urls import reverse
-import stripe
-from decouple import config
 
 from ..forms import RegisterForm, LoginForm
 from ..models import Therapist
+from ..stripe_manager import stripe_manager
 
 
 def signup_user(request):
@@ -20,15 +19,16 @@ def signup_user(request):
                 user.username = email
                 user.email = email
                 user.save()
-                name = form.cleaned_data.get("first_name")
-                account = Therapist(name=name, user=user)
-                account.save()
                 raw_password = form.cleaned_data.get("password1")
                 user = authenticate(username=user.username, password=raw_password)
                 if user:
-                    stripe.api_key = config("STRIPE_SECRET")
-                    stripe_customer = stripe.Customer.create(email=email)
-                    account.stripe_customer_id = stripe_customer["id"]
+                    name = form.cleaned_data.get("first_name")
+                    stripe_customer_id = stripe_manager.register_customer(
+                        email=user.email
+                    )
+                    account = Therapist(
+                        name=name, user=user, stripe_customer_id=stripe_customer_id
+                    )
                     account.save()
                     login(request, user)
                     return redirect(reverse("home"))
