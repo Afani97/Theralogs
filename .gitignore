@@ -3,5 +3,4 @@
 venv/
 frontend/node_modules/
 .idea/
-theralogs/__pycache__/
-theralogsproject/__pycache__/
+*.pyc
