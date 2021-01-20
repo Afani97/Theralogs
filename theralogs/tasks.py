@@ -1,15 +1,13 @@
 import json
-import smtplib
-from email.message import EmailMessage
 
 import boto3
 from botocore.config import Config
 from celery import shared_task
-from decouple import config
 
+from theralogs.email_manager import email_manager
 from theralogs.models import TLSession, Patient
 from theralogs.stripe_manager import stripe_manager
-from theralogs.utils import render_to_pdf, format_transcript
+from theralogs.utils import format_transcript
 from theralogsproject.settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 
@@ -55,11 +53,6 @@ def send_email_transcript(job_name):
     json_content = json.loads(file_content)
     formatted_transcript = format_transcript(json_content)
 
-    msg = EmailMessage()
-    msg["Subject"] = "Testing out theralogs email from Namecheap!"
-    msg["From"] = config("NAMECHEAP_EMAIL")
-    msg["To"] = patient.email
-
     context = {"transcript": formatted_transcript}
     patient_session.recording_json = context
     patient_session.save()
@@ -69,18 +62,8 @@ def send_email_transcript(job_name):
         recording_time=total_minutes_of_recording, patient=patient
     )
 
-    context = patient_session.recording_json
-    context["date_created"] = patient_session.created_at
-    context["therapist"] = patient.therapist.name
-    context["patient"] = patient.name
-    pdf = render_to_pdf(context)
-    msg.add_attachment(
-        pdf, maintype="application", subtype="octet-stream", filename="patient.pdf"
-    )
+    email_manager.send_email(session=patient_session)
 
-    with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
-        smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
-        smtp.send_message(msg)
     return True
 
 
@@ -88,21 +71,6 @@ def send_email_transcript(job_name):
 def resend_email_to_patient(session_id):
     session = TLSession.objects.get(id=session_id)
 
-    msg = EmailMessage()
-    msg["Subject"] = "Testing out theralogs email!"
-    msg["From"] = config("NAMECHEAP_EMAIL")
-    msg["To"] = session.patient.email
+    email_manager.send_email(session=session)
 
-    context = session.recording_json
-    context["date_created"] = session.created_at
-    context["therapist"] = session.patient.therapist.name
-    context["patient"] = session.patient.name
-    pdf = render_to_pdf(context)
-    msg.add_attachment(
-        pdf, maintype="application", subtype="octet-stream", filename="patient.pdf"
-    )
-
-    with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
-        smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
-        smtp.send_message(msg)
     return True
