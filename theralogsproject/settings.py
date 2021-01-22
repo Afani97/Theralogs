@@ -148,6 +148,7 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     # SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_HSTS_SECONDS = 86400  # 1 day
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
@@ -158,6 +159,12 @@ if not DEBUG:
     CSP_SCRIPT_SRC = ("'self'",)
     CSP_IMG_SRC = ("'self'",)
     CSP_FONT_SRC = ("'self'",)
+    CSP_CONNECT_SRC = ("'self'",)
+    CSP_OBJECT_SRC = ("'none'",)
+    CSP_BASE_URI = ("'none'",)
+    CSP_FRAME_ANCESTORS = ("'none'",)
+    CSP_FORM_ACTION = ("'self'",)
+    CSP_INCLUDE_NONCE_IN = ("script-src",)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
