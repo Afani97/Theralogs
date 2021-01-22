@@ -6,7 +6,7 @@ from django.views.generic import UpdateView
 
 from theralogs.forms import EditProfileForm, UpdatePaymentForm
 from theralogs.models import Therapist
-from theralogs.stripe_manager import stripe_manager
+from theralogs.managers.stripe_manager import stripe_manager
 
 
 @login_required

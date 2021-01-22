@@ -1,8 +1,5 @@
-from io import BytesIO
-from django.template.loader import get_template, render_to_string
+from django.template.loader import render_to_string
 from weasyprint import HTML
-
-from xhtml2pdf import pisa
 
 
 def render_to_pdf(context_dict={}):

@@ -74,7 +74,6 @@ def file_upload(request):
         tl_session.save()
 
         my_file.name = f"{tl_session.id}"
-
         TLFile.objects.create(file=my_file)
 
         media_storage = MediaStorage()

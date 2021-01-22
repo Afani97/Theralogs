@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from ..forms import RegisterForm, LoginForm
 from ..models import Therapist
-from ..stripe_manager import stripe_manager
+from theralogs.managers.stripe_manager import stripe_manager
 
 
 def signup_user(request):
