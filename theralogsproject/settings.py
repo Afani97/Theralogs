@@ -147,16 +147,16 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     # SECURE_SSL_REDIRECT = True
-    # SECURE_HSTS_SECONDS = 86400  # 1 day
-    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    # SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = 86400  # 1 day
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
     # Content Security Policy
-    # CSP_DEFAULT_SRC = ("'none'",)
-    # CSP_STYLE_SRC = ("'self'",)
-    # CSP_SCRIPT_SRC = ("'self'",)
-    # CSP_IMG_SRC = ("'self'",)
-    # CSP_FONT_SRC = ("'self'",)
+    CSP_DEFAULT_SRC = ("'none'",)
+    CSP_STYLE_SRC = ("'self'",)
+    CSP_SCRIPT_SRC = ("'self'",)
+    CSP_IMG_SRC = ("'self'",)
+    CSP_FONT_SRC = ("'self'",)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
