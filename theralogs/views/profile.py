@@ -5,8 +5,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 
 from theralogs.forms import EditProfileForm, UpdatePaymentForm
-from theralogs.models import Therapist
 from theralogs.managers.stripe_manager import stripe_manager
+from theralogs.models import Therapist
 
 
 @login_required

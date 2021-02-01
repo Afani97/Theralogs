@@ -17,19 +17,19 @@ from django_otp.admin import OTPAdminSite
 from django.contrib.auth.models import User
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
-from theralogs.models import TLFile, TLSession, Therapist, Patient
+from theralogs.models import TLSession, Therapist, Patient
+
 
 class OTPAdmin(OTPAdminSite):
     pass
 
 
-admin_site = OTPAdmin(name='OTPAdmin')
+admin_site = OTPAdmin(name="OTPAdmin")
 admin_site.register(User)
 admin_site.register(TOTPDevice, TOTPDeviceAdmin)
 
 
 # Register your models here.
-admin_site.register(TLFile)
 admin_site.register(TLSession)
 admin_site.register(Therapist)
 admin_site.register(Patient)
@@ -39,9 +39,6 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = [
-    path('admin/', admin_site.urls),
-    path('', include('theralogs.urls'))
-]
+urlpatterns = [path("admin/", admin_site.urls), path("", include("theralogs.urls"))]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

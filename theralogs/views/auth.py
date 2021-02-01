@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from theralogs.managers.stripe_manager import stripe_manager
 from ..forms import RegisterForm, LoginForm
 from ..models import Therapist
-from theralogs.managers.stripe_manager import stripe_manager
 
 
 def signup_user(request):

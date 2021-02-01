@@ -1,3 +1,4 @@
+import json
 import smtplib
 from email.message import EmailMessage
 
@@ -14,10 +15,12 @@ class email_manager:
         msg["From"] = config("NAMECHEAP_EMAIL")
         msg["To"] = session.patient.email
 
-        context = session.recording_json
-        context["date_created"] = session.created_at
-        context["therapist"] = session.patient.therapist.name
-        context["patient"] = session.patient.name
+        context = {
+            "transcript": json.loads(session.recording_json),
+            "date_created": session.created_at,
+            "therapist": session.patient.therapist.name,
+            "patient": session.patient.name,
+        }
 
         pdf = render_to_pdf(context)
         msg.add_attachment(

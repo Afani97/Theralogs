@@ -1,45 +1,69 @@
-from celery import shared_task
+import json
 
-from theralogs.managers.aws_manager import aws_manager
+import requests
+from decouple import config
+from background_task import background
+
 from theralogs.managers.email_manager import email_manager
 from theralogs.models import TLSession
 from theralogs.managers.stripe_manager import stripe_manager
+from theralogs.utils import format_transcript_utterances
 
 
-@shared_task
-def generate_transcribe(file_name, file_uri):
-    job_name = f"{file_name}-medical"
-    transcribe_job = aws_manager.create_medical_transcript(
-        job_name=job_name, file_uri=file_uri
-    )
-    if transcribe_job:
-        return True
-    return False
+@background(schedule=5)
+def create_transcribe(upload_url, session_id):
+    webhook_base = "http://71bf6c99bd77.ngrok.io"
+    endpoint = "https://api.assemblyai.com/v2/transcript"
+
+    json_body = {
+        "audio_url": upload_url,
+        "webhook_url": f"{webhook_base}/main/aai-webhook?session_id={session_id}",
+        "speaker_labels": True,
+    }
+
+    headers = {
+        "authorization": config("ASSEMBLY_AI_KEY"),
+        "content-type": "application/json",
+    }
+
+    response = requests.post(endpoint, json=json_body, headers=headers)
+    return True
 
 
-@shared_task
-def send_email_transcript(job_name):
-    patient_session_id = job_name.split("-medical")[0]
-    patient_session = TLSession.objects.get(id=patient_session_id)
-    if not patient_session:
-        return False
+@background(schedule=5)
+def send_email_transcript(session_id, transcript_id):
+    session = TLSession.objects.get(id=session_id)
+    endpoint = f"https://api.assemblyai.com/v2/transcript/{transcript_id}"
 
-    formatted_transcript = aws_manager.get_transcription_from_s3(job_name=job_name)
-    context = {"transcript": formatted_transcript}
-    patient_session.recording_json = context
-    patient_session.save()
+    headers = {
+        "authorization": config("ASSEMBLY_AI_KEY"),
+    }
 
-    total_minutes_of_recording = patient_session.recording_length / 60
+    response = requests.get(endpoint, headers=headers)
+    response_json = response.json()
+
+    audio_duration = float(response_json["audio_duration"])
+    session.recording_length = audio_duration
+    session.save()
+
+    utterances = response_json["utterances"]
+    formatted_transcript = format_transcript_utterances(utterances)
+
+    context = json.dumps(formatted_transcript)
+    session.recording_json = context
+    session.save()
+
+    total_minutes_of_recording = session.recording_length / 60
     stripe_manager.charge_customer(
-        recording_time=total_minutes_of_recording, patient=patient_session.patient
+        recording_time=total_minutes_of_recording, patient=session.patient
     )
 
-    email_manager.send_email(session=patient_session)
+    email_manager.send_email(session=session)
 
     return True
 
 
-@shared_task
+@background(schedule=5)
 def resend_email_to_patient(session_id):
     session = TLSession.objects.get(id=session_id)
     email_manager.send_email(session=session)

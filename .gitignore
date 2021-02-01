@@ -4,3 +4,5 @@ venv/
 frontend/node_modules/
 .idea/
 *.pyc
+.DS_STORE
+staticfiles/rest_framework/

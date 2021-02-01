@@ -3,16 +3,25 @@ from collections import OrderedDict
 from datetime import datetime
 
 import dateutil.relativedelta
-import mutagen
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 
-from theralogsproject.storage_backends import MediaStorage
-from ..models import TLFile, Patient, TLSession
-from ..tasks import generate_transcribe, send_email_transcript, resend_email_to_patient
+from ..models import Patient, TLSession
+from ..tasks import (
+    send_email_transcript,
+    resend_email_to_patient,
+    create_transcribe,
+)
+from ..utils import read_file
+from decouple import config
+
+
+class LandingPage(TemplateView):
+    template_name = "theralogs/landing_page.html"
 
 
 @login_required
@@ -69,16 +78,20 @@ def file_upload(request):
         patient = Patient.objects.get(id=patient_id)
 
         my_file = request.FILES.get("file")
-        audio_file = mutagen.File(my_file.temporary_file_path())
-        tl_session = TLSession(patient=patient, recording_length=audio_file.info.length)
+        tl_session = TLSession(patient=patient, recording_length=0)
         tl_session.save()
 
-        my_file.name = f"{tl_session.id}"
-        TLFile.objects.create(file=my_file)
+        headers = {"authorization": config("ASSEMBLY_AI_KEY")}
+        response = requests.post(
+            "https://api.assemblyai.com/v2/upload",
+            headers=headers,
+            data=read_file(my_file.temporary_file_path()),
+        )
 
-        media_storage = MediaStorage()
-        file_uri = media_storage.url(my_file.name)
-        task = generate_transcribe.delay(my_file.name, file_uri)
+        json_response = response.json()
+        upload_url = json_response["upload_url"]
+
+        task = create_transcribe.now(upload_url, str(tl_session.id))
 
         if task:
             return JsonResponse({"msg": "success"})
@@ -88,28 +101,22 @@ def file_upload(request):
 
 @login_required
 def resend_email(request, session_id):
-    task = resend_email_to_patient.delay(session_id)
+    task = resend_email_to_patient.now(str(session_id))
     return JsonResponse({"msg": "success"})
 
 
 @csrf_exempt
-def sns_transcribe_event(request):
-    message_type_header = "HTTP_X_AMZ_SNS_MESSAGE_TYPE"
-    if message_type_header in request.META:
+def transcribe_webhook(request):
+    session_id = request.GET.getlist("session_id")[0]
+    session = TLSession.objects.get(id=session_id)
+    if session:
         payload = json.loads(request.body.decode("utf-8"))
-
-        message_type = request.META[message_type_header]
-        if message_type == "SubscriptionConfirmation":
-            subscribe_url = payload.get("SubscribeURL")
-            res = requests.get(subscribe_url)
-            if res.status_code != 200:
-                return HttpResponse(
-                    "Invalid verification:\n{0}".format(res.content), status=400
-                )
+        status = payload["status"]
+        if status == "completed":
+            transcript_id = payload["transcript_id"]
+            send_email_transcript.now(str(session_id), transcript_id)
         else:
-            payload = json.loads(request.body.decode("utf-8"))
-            message = json.loads(payload["Message"])
-            job_name = message["detail"]["TranscriptionJobName"].split("@")[0]
-            task = send_email_transcript.delay(job_name)
-
+            print("Error transcribing text")
+    else:
+        print("Session not found")
     return HttpResponse("OK")

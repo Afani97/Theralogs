@@ -85,7 +85,7 @@ for (var i = 0; i < sendButtons.length; i++) {
 
     const id = e.target.id
 
-    fetch(`/resend-email/${id}/`, {
+    fetch(`resend-email/${id}/`, {
       method: 'GET',
       credentials: 'include',
       mode: 'same-origin',
