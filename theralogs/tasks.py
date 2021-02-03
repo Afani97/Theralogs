@@ -12,7 +12,7 @@ from theralogs.utils import format_transcript_utterances
 
 @background(schedule=5)
 def create_transcribe(upload_url, session_id):
-    webhook_base = "http://71bf6c99bd77.ngrok.io"
+    webhook_base = "http://f4e6baf28f2b.ngrok.io"
     endpoint = "https://api.assemblyai.com/v2/transcript"
 
     json_body = {

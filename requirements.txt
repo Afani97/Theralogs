@@ -19,10 +19,11 @@ click-repl==0.1.6
 cryptography==3.3.1
 cssselect2==0.4.1
 defusedxml==0.6.0
-Django==3.1.4
+Django==3.1.6
 django-appconf==1.0.4
 django-background-tasks==1.2.5
 django-compat==1.0.15
+django-crontab==0.7.1
 django-cryptography==1.0
 django-csp==3.7
 django-otp==1.0.2
