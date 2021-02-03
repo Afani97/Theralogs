@@ -8,11 +8,14 @@ from theralogs.managers.email_manager import email_manager
 from theralogs.models import TLSession
 from theralogs.managers.stripe_manager import stripe_manager
 from theralogs.utils import format_transcript_utterances
+from theralogsproject.settings import DEBUG
 
 
 @background(schedule=5)
 def create_transcribe(upload_url, session_id):
     webhook_base = "http://f4e6baf28f2b.ngrok.io"
+    if not DEBUG:
+        webhook_base = "https://afani97.pythonanywhere.com"
     endpoint = "https://api.assemblyai.com/v2/transcript"
 
     json_body = {
