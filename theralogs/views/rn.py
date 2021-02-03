@@ -59,7 +59,7 @@ class AudioUploadView(APIView):
         json_response = response.json()
         upload_url = json_response["upload_url"]
 
-        task = create_transcribe(upload_url, tl_session.id)
+        task = create_transcribe.now(upload_url, tl_session.id)
 
         if task:
             return JsonResponse({"msg": "success"})

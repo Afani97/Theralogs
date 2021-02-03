@@ -91,7 +91,7 @@ def file_upload(request):
         json_response = response.json()
         upload_url = json_response["upload_url"]
 
-        task = create_transcribe(upload_url, str(tl_session.id))
+        task = create_transcribe.now(upload_url, str(tl_session.id))
 
         if task:
             return JsonResponse({"msg": "success"})
@@ -101,7 +101,7 @@ def file_upload(request):
 
 @login_required
 def resend_email(request, session_id):
-    task = resend_email_to_patient(str(session_id))
+    task = resend_email_to_patient.now(str(session_id))
     return JsonResponse({"msg": "success"})
 
 
@@ -114,7 +114,7 @@ def transcribe_webhook(request):
         status = payload["status"]
         if status == "completed":
             transcript_id = payload["transcript_id"]
-            send_email_transcript(str(session_id), transcript_id)
+            send_email_transcript.now(str(session_id), transcript_id)
         else:
             print("Error transcribing text")
     else:
