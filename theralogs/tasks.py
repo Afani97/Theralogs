@@ -15,7 +15,7 @@ from theralogsproject.settings import DEBUG
 def create_transcribe(upload_url, session_id):
     webhook_base = "http://f4e6baf28f2b.ngrok.io"
     if not DEBUG:
-        webhook_base = "https://afani97.pythonanywhere.com"
+        webhook_base = "https://www.usetheralogs.com"
     endpoint = "https://api.assemblyai.com/v2/transcript"
 
     json_body = {
