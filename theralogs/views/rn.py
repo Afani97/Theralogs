@@ -1,6 +1,3 @@
-import itertools
-from collections import OrderedDict
-
 import requests
 from decouple import config
 from django.http import JsonResponse
