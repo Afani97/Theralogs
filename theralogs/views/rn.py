@@ -1,3 +1,6 @@
+import itertools
+from collections import OrderedDict
+
 import requests
 from decouple import config
 from django.http import JsonResponse
@@ -9,7 +12,7 @@ from django.contrib.auth.models import User
 
 
 from theralogs.models import Patient, TLSession, Therapist
-from ..tasks import create_transcribe
+from ..tasks import create_transcribe, resend_email_to_patient
 from ..utils import read_file
 
 
@@ -27,6 +30,15 @@ class TherapistSerializer(serializers.ModelSerializer):
         fields = ("id", "user", "name", "license_id", "city", "state", "created_at")
 
 
+class TLSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TLSession
+        fields = (
+            "id",
+            "created_at",
+        )
+
+
 class MainView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -34,8 +46,7 @@ class MainView(APIView):
         patients = []
         for p in request.user.therapist.patient_set.all():
             patients.append({"id": p.id, "name": p.name, "email": p.email})
-        context = {"msg": "success", "patients": patients}
-        return JsonResponse(context)
+        return JsonResponse({"msg": "success", "patients": patients})
 
 
 class AudioUploadView(APIView):
@@ -77,8 +88,7 @@ class CreatePatientView(APIView):
             name=patient_name, email=patient_email, therapist=request.user.therapist
         )
         patient.save()
-        context = {"msg": "success"}
-        return JsonResponse(context)
+        return JsonResponse({"msg": "success"})
 
 
 class ProfileView(APIView):
@@ -87,3 +97,23 @@ class ProfileView(APIView):
     def get(self, request):
         serializer = TherapistSerializer(request.user.therapist)
         return Response(serializer.data)
+
+
+class ClientProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, patient_id):
+        patient = Patient.objects.get(id=patient_id)
+        if patient:
+            sessions = patient.tlsession_set.all()
+            serializer = TLSessionSerializer(sessions, many=True)
+            return Response(serializer.data)
+        return JsonResponse({"msg": "error"})
+
+
+class ResendSessionPDFView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, session_id):
+        task = resend_email_to_patient.now(str(session_id))
+        return JsonResponse({"msg": "success"})

@@ -32,6 +32,8 @@ urlpatterns = [
     path("rn/profile/", rn.ProfileView.as_view()),
     path("rn/file-upload/", rn.AudioUploadView.as_view()),
     path("rn/patient/create/", rn.CreatePatientView.as_view()),
+    path("rn/patient/<uuid:patient_id>/profile/", rn.ClientProfileView.as_view()),
+    path("rn/sessions/<uuid:session_id>/resend/", rn.ResendSessionPDFView.as_view()),
 ]
 
 # JWT
