@@ -18,6 +18,7 @@ from ..tasks import (
 )
 from ..utils import read_file
 from decouple import config
+from ..managers.audio_transcribe_manager import audio_transcribe_manager
 
 
 class LandingPage(TemplateView):
@@ -81,15 +82,9 @@ def file_upload(request):
         tl_session = TLSession(patient=patient, recording_length=0)
         tl_session.save()
 
-        headers = {"authorization": config("ASSEMBLY_AI_KEY")}
-        response = requests.post(
-            "https://api.assemblyai.com/v2/upload",
-            headers=headers,
-            data=read_file(my_file.temporary_file_path()),
+        upload_url = audio_transcribe_manager.upload_audio_file(
+            temp_file_path=my_file.temporary_file_path()
         )
-
-        json_response = response.json()
-        upload_url = json_response["upload_url"]
 
         task = create_transcribe.now(upload_url, str(tl_session.id))
 

@@ -1,39 +1,12 @@
-import requests
-from decouple import config
 from django.http import JsonResponse
-from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
 
-
-from theralogs.models import Patient, TLSession, Therapist
+from theralogs.models import Patient, TLSession
+from ..managers.audio_transcribe_manager import audio_transcribe_manager
+from ..serializers import TherapistSerializer, TLSessionSerializer
 from ..tasks import create_transcribe, resend_email_to_patient
-from ..utils import read_file
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("email",)
-
-
-class TherapistSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
-
-    class Meta:
-        model = Therapist
-        fields = ("id", "user", "name", "license_id", "city", "state", "created_at")
-
-
-class TLSessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TLSession
-        fields = (
-            "id",
-            "created_at",
-        )
 
 
 class MainView(APIView):
@@ -57,15 +30,9 @@ class AudioUploadView(APIView):
         tl_session = TLSession(patient=patient, recording_length=0)
         tl_session.save()
 
-        headers = {"authorization": config("ASSEMBLY_AI_KEY")}
-        response = requests.post(
-            "https://api.assemblyai.com/v2/upload",
-            headers=headers,
-            data=read_file(my_file.temporary_file_path()),
+        upload_url = audio_transcribe_manager.upload_audio_file(
+            temp_file_path=my_file.temporary_file_path()
         )
-
-        json_response = response.json()
-        upload_url = json_response["upload_url"]
 
         task = create_transcribe.now(upload_url, tl_session.id)
 
