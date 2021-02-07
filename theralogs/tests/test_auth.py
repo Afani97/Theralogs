@@ -4,8 +4,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from theralogs.models import Therapist
 from unittest.mock import MagicMock
-from mock import patch, mock
-
+import mock
 
 # Create your tests here.
 
