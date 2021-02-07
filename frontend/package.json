@@ -13,8 +13,7 @@
   "devDependencies": {},
   "scripts": {
     "build": "npx tailwindcss-cli@latest build ./styles.css -o ../static/style.min.css",
-    "clean:css": "cleancss -o ../static/style.min.css ../static/style.min.css",
-    "prod": "NODE_ENV=production npm run build && npm run clean:css"
+    "prod": "NODE_ENV=production npm run build"
   },
   "keywords": [],
   "author": "",
