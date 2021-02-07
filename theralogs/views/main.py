@@ -3,22 +3,19 @@ from collections import OrderedDict
 from datetime import datetime
 
 import dateutil.relativedelta
-import requests
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
+from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
 from ..tasks import (
     send_email_transcript,
     resend_email_to_patient,
     create_transcribe,
 )
-from ..utils import read_file
-from decouple import config
-from ..managers.audio_transcribe_manager import audio_transcribe_manager
 
 
 class LandingPage(TemplateView):

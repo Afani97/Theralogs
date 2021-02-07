@@ -28,12 +28,22 @@ urlpatterns = [
     path("profile/", profile.view_profile, name="profile"),
     path("profile/edit/", profile.EditProfileView.as_view(), name="edit_profile"),
     path("profile/update_payment/", profile.update_payment, name="update_payment"),
-    path("rn/main/", rn.MainView.as_view()),
-    path("rn/profile/", rn.ProfileView.as_view()),
-    path("rn/file-upload/", rn.AudioUploadView.as_view()),
-    path("rn/patient/create/", rn.CreatePatientView.as_view()),
-    path("rn/patient/<uuid:patient_id>/profile/", rn.ClientProfileView.as_view()),
-    path("rn/sessions/<uuid:session_id>/resend/", rn.ResendSessionPDFView.as_view()),
+    path("rn/main/", rn.MainView.as_view(), name="rn_main"),
+    path("rn/profile/", rn.ProfileView.as_view(), name="rn_profile"),
+    path("rn/file-upload/", rn.AudioUploadView.as_view(), name="rn_file_upload"),
+    path(
+        "rn/patient/create/", rn.CreatePatientView.as_view(), name="rn_patient_create"
+    ),
+    path(
+        "rn/patient/<uuid:patient_id>/profile/",
+        rn.ClientProfileView.as_view(),
+        name="rn_patient_profile",
+    ),
+    path(
+        "rn/sessions/<uuid:session_id>/resend/",
+        rn.ResendSessionPDFView.as_view(),
+        name="rn_resend_pdf",
+    ),
 ]
 
 # JWT

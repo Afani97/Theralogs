@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -47,12 +48,14 @@ class CreatePatientView(APIView):
     def post(self, request):
         patient_name = request.POST.get("patient-name")
         patient_email = request.POST.get("patient-email")
-
-        patient = Patient(
-            name=patient_name, email=patient_email, therapist=request.user.therapist
-        )
-        patient.save()
-        return JsonResponse({"msg": "success"})
+        if patient_email and patient_name:
+            patient = Patient(
+                name=patient_name, email=patient_email, therapist=request.user.therapist
+            )
+            patient.save()
+            return JsonResponse({"msg": "success"})
+        else:
+            return Response({"msg": "error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileView(APIView):
