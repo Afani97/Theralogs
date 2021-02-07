@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+import sys
 
 from decouple import config
 
@@ -31,6 +32,8 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 
 # Application definition
@@ -97,6 +100,14 @@ DATABASES = {
         "PORT": config("DB_PORT"),
     }
 }
+
+if TESTING:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
+    }
 
 
 # Password validation

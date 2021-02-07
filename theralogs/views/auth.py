@@ -32,21 +32,32 @@ def signup_user(request):
                     account.save()
                     login(request, user)
                     return redirect(reverse("home"))
+        else:
+            response = render(request, "theralogs/auth/signup.html", {"form": form})
+            response.status_code = 400
+            return response
     else:
         form = RegisterForm()
     return render(request, "theralogs/auth/signup.html", {"form": form})
 
 
 def login_user(request):
-    form = LoginForm(request.POST or None)
-    if request.POST and form.is_valid():
-        email = form.cleaned_data.get("email")
-        password = form.cleaned_data.get("password")
-        user = authenticate(username=email, password=password)
-        if user:
-            login(request, user)
-            return redirect(reverse("home"))
-    return render(request, "theralogs/auth/login.html", {"form": form})
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=email, password=password)
+            if user:
+                login(request, user)
+                return redirect(reverse("home"))
+        else:
+            response = render(request, "theralogs/auth/login.html", {"form": form})
+            response.status_code = 400
+            return response
+    else:
+        form = LoginForm()
+        return render(request, "theralogs/auth/login.html", {"form": form})
 
 
 @login_required
