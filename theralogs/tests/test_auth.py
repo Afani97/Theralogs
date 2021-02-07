@@ -3,10 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
 from theralogs.models import Therapist
-from unittest.mock import MagicMock
 import mock
-
-# Create your tests here.
 
 
 class TestAuthViews(TestCase):
@@ -52,13 +49,15 @@ class TestAuthViews(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, reverse("home"))
 
-    def test_signup_error(self):
+    @mock.patch("stripe.Customer.create")
+    def test_signup_error(self, create_mock):
         client = Client()
+        create_mock.return_value = {"id": str(uuid.uuid4())}
         response = client.post(
             reverse("signup"),
             {
                 "first_name": "Thomas",
-                "email": "thomas@test.com",
+                "email": "thomas2@test.com",
                 "password1": "Apple101!",
             },
         )

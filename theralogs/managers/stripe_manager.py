@@ -15,6 +15,10 @@ class stripe_manager:
     @classmethod
     def create_payment_method(cls, therapist, card_dict):
         stripe.api_key = cls.stripe_api_key
+        if therapist.stripe_payment_method_id:
+            stripe.PaymentMethod.detach(
+                therapist.stripe_payment_method_id,
+            )
         stripe_payment_method = stripe.PaymentMethod.create(
             type="card",
             card={
@@ -24,11 +28,6 @@ class stripe_manager:
                 "cvc": card_dict["cvc"],
             },
         )
-        if therapist.stripe_payment_method_id:
-            stripe.PaymentMethod.detach(
-                therapist.stripe_payment_method_id,
-            )
-
         therapist.stripe_payment_method_id = stripe_payment_method["id"]
         stripe.PaymentMethod.attach(
             therapist.stripe_payment_method_id,
@@ -41,6 +40,7 @@ class stripe_manager:
             },
         )
         therapist.save()
+        return therapist.stripe_payment_method_id is not None
 
     @classmethod
     def charge_customer(cls, recording_time, patient):

@@ -1,12 +1,10 @@
 import uuid
+
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
-from theralogs.models import Therapist, Patient
-from unittest.mock import MagicMock
-import mock
 
-# Create your tests here.
+from theralogs.models import Therapist, Patient
 
 
 class TestPatientViews(TestCase):

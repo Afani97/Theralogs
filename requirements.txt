@@ -20,10 +20,12 @@ djangorestframework==3.12.2
 djangorestframework-simplejwt==4.6.0
 html5lib==1.1
 idna==2.10
+mock==4.0.3
 mypy-extensions==0.4.3
 pathspec==0.8.1
 Pillow==8.1.0
 psycopg2==2.8.6
+psycopg2-binary==2.8.6
 pycparser==2.20
 PyJWT==2.0.1
 Pyphen==0.10.0

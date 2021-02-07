@@ -53,9 +53,22 @@ def update_payment(request):
                 "exp_year": payment_form.cleaned_data.get("card_exp_year"),
                 "cvc": payment_form.cleaned_data.get("card_cvc"),
             }
-            stripe_manager.create_payment_method(
+            stripe_saved = stripe_manager.create_payment_method(
                 therapist=request.user.therapist, card_dict=card_dict
             )
-            return redirect("profile")
-    context = {"form": payment_form}
-    return render(request, "theralogs/profile/update_payment.html", context)
+            if stripe_saved:
+                return redirect("profile")
+            response = render(
+                request, "theralogs/profile/update_payment.html", {"form": payment_form}
+            )
+            response.status_code = 400
+            return response
+        else:
+            response = render(
+                request, "theralogs/profile/update_payment.html", {"form": payment_form}
+            )
+            response.status_code = 400
+            return response
+    return render(
+        request, "theralogs/profile/update_payment.html", {"form": payment_form}
+    )

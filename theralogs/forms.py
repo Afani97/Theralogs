@@ -49,7 +49,6 @@ class LoginForm(forms.ModelForm):
 
 
 class EditProfileForm(forms.ModelForm):
-    # profile_image = forms.ImageField(label='Profile image', required=False)
     email = forms.EmailField(
         label="Email",
         required=True,
@@ -58,20 +57,12 @@ class EditProfileForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        if email != self.user.email and User.objects.filter(email=email).count() != 0:
+        if (
+            email != self.user.email
+            and User.objects.filter(username=email).count() != 0
+        ):
             raise ValidationError("Email already taken")
         return email
-
-    # def clean_profile_image(self):
-    #     profile_image = self.cleaned_data.get('profile_image')
-    #     if profile_image:
-    #         file_type = profile_image.image.format
-    #         i = Image.open(profile_image)
-    #         i.thumbnail((100, 100))
-    #         output = io.BytesIO()
-    #         i.save(output, format=file_type)
-    #         return output.getvalue()
-    #     return self.user.cook.profile_image
 
     class Meta:
         model = Therapist
