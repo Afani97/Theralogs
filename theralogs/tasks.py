@@ -14,7 +14,7 @@ class background_tasks:
     @staticmethod
     @background(schedule=5)
     def create_transcribe(upload_url, session_id):
-        webhook_base = "http://63c562dd4fdf.ngrok.io"
+        webhook_base = "http://489a70fcc3c9.ngrok.io"
         if not DEBUG:
             webhook_base = "https://www.usetheralogs.com"
         task = audio_transcribe_manager.upload_audio_url(

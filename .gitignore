@@ -6,3 +6,4 @@ frontend/node_modules/
 *.pyc
 .DS_STORE
 staticfiles/rest_framework/
+TheraLogs-transcribe-example.mp4
