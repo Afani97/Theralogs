@@ -11,7 +11,7 @@ urlpatterns = [
     path("main/", main.main_view, name="home"),
     path("main/file-upload/", main.file_upload, name="file_upload"),
     path(
-        "main/resend-email/<uuid:session_id>/", main.resend_email, name="resend-email"
+        "main/resend-email/<uuid:session_id>/", main.resend_email, name="resend_email"
     ),
     path("main/aai-webhook", main.transcribe_webhook, name="aai-webhook"),
     path("main/<str:filter_date>/", main.main_view, name="filter_main"),
@@ -42,7 +42,7 @@ urlpatterns = [
     path(
         "rn/sessions/<uuid:session_id>/resend/",
         rn.ResendSessionPDFView.as_view(),
-        name="rn_resend_pdf",
+        name="rn_resend_email",
     ),
 ]
 

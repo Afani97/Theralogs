@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from theralogs.models import Patient, TLSession
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..serializers import TherapistSerializer, TLSessionSerializer
-from ..tasks import create_transcribe, resend_email_to_patient
+from ..tasks import background_tasks
 
 
 class MainView(APIView):
@@ -28,18 +28,19 @@ class AudioUploadView(APIView):
         patient = Patient.objects.get(id=patient_id)
 
         my_file = request.FILES.get("file")
-        tl_session = TLSession(patient=patient, recording_length=0)
-        tl_session.save()
+        if my_file:
+            tl_session = TLSession(patient=patient, recording_length=0)
+            tl_session.save()
 
-        upload_url = audio_transcribe_manager.upload_audio_file(
-            temp_file_path=my_file.temporary_file_path()
-        )
+            upload_url = audio_transcribe_manager.upload_audio_file(
+                temp_file_path=my_file.temporary_file_path()
+            )
 
-        task = create_transcribe.now(upload_url, tl_session.id)
+            task = background_tasks.create_transcribe.now(upload_url, tl_session.id)
 
-        if task:
-            return JsonResponse({"msg": "success"})
-        return JsonResponse({"msg": "error"})
+            if task:
+                return JsonResponse({"msg": "success"})
+        return JsonResponse({"msg": "error"}, status=400)
 
 
 class CreatePatientView(APIView):
@@ -82,5 +83,10 @@ class ResendSessionPDFView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, session_id):
-        task = resend_email_to_patient.now(str(session_id))
-        return JsonResponse({"msg": "success"})
+        if session_id:
+            session = TLSession.objects.filter(id=session_id).exists()
+            if session:
+                task = background_tasks.resend_email_to_patient.now(str(session_id))
+                if task:
+                    return JsonResponse({"msg": "success"})
+        return JsonResponse({"msg": "error"}, status=400)

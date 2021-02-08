@@ -36,6 +36,24 @@ class TestPatientViews(TestCase):
         )
         self.assertEquals(response.status_code, 400)
 
+    def test_create_patient_ajax(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+        response = self.client.post(
+            reverse("patient_create"),
+            {"patient-name": "Jane", "patient-email": "jane@test.com"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEquals(response.status_code, 200)
+
+    def test_create_patient_ajax_failed(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+        response = self.client.post(
+            reverse("patient_create"),
+            {"patient-name": "Jane"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEquals(response.status_code, 400)
+
     def test_edit_patient(self):
         self.client.login(username="therapist@test.com", password="Apple101!")
         patient = Patient.objects.create(

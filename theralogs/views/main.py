@@ -4,18 +4,14 @@ from datetime import datetime
 
 import dateutil.relativedelta
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
-from ..tasks import (
-    send_email_transcript,
-    resend_email_to_patient,
-    create_transcribe,
-)
+from ..tasks import background_tasks
 
 
 class LandingPage(TemplateView):
@@ -76,39 +72,48 @@ def file_upload(request):
         patient = Patient.objects.get(id=patient_id)
 
         my_file = request.FILES.get("file")
-        tl_session = TLSession(patient=patient, recording_length=0)
-        tl_session.save()
+        if my_file:
+            tl_session = TLSession(patient=patient, recording_length=0)
+            tl_session.save()
 
-        upload_url = audio_transcribe_manager.upload_audio_file(
-            temp_file_path=my_file.temporary_file_path()
-        )
+            upload_url = audio_transcribe_manager.upload_audio_file(
+                temp_file_path=my_file.temporary_file_path()
+            )
 
-        task = create_transcribe.now(upload_url, str(tl_session.id))
+            task = background_tasks.create_transcribe.now(
+                upload_url, str(tl_session.id)
+            )
 
-        if task:
-            return JsonResponse({"msg": "success"})
+            if task:
+                return JsonResponse({"msg": "success"})
 
-    return JsonResponse({"msg": "error"})
+    return JsonResponse({"msg": "error"}, status=400)
 
 
 @login_required
 def resend_email(request, session_id):
-    task = resend_email_to_patient.now(str(session_id))
-    return JsonResponse({"msg": "success"})
+    if session_id:
+        session = TLSession.objects.filter(id=session_id).exists()
+        if session:
+            task = background_tasks.resend_email_to_patient.now(str(session_id))
+            if task:
+                return JsonResponse({"msg": "success"})
+    return JsonResponse({"msg": "error"}, status=400)
 
 
 @csrf_exempt
 def transcribe_webhook(request):
-    session_id = request.GET.getlist("session_id")[0]
-    session = TLSession.objects.get(id=session_id)
-    if session:
-        payload = json.loads(request.body.decode("utf-8"))
-        status = payload["status"]
-        if status == "completed":
-            transcript_id = payload["transcript_id"]
-            send_email_transcript.now(str(session_id), transcript_id)
-        else:
-            print("Error transcribing text")
-    else:
-        print("Session not found")
-    return HttpResponse("OK")
+    if request.GET.getlist("session_id"):
+        session_id = request.GET.getlist("session_id")[0]
+        session = TLSession.objects.filter(id=session_id).exists()
+        if session:
+            payload = json.loads(request.body.decode("utf-8"))
+            status = payload["status"]
+            if status == "completed":
+                transcript_id = payload["transcript_id"]
+                task = background_tasks.send_email_transcript.now(
+                    str(session_id), transcript_id
+                )
+                if task:
+                    return HttpResponse("Ok")
+    return HttpResponseBadRequest("Session not found")

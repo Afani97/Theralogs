@@ -11,13 +11,15 @@ def create_patient(request):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         patient_name = request.POST.get("patient-name")
         patient_email = request.POST.get("patient-email")
-
-        patient = Patient(
-            name=patient_name, email=patient_email, therapist=request.user.therapist
-        )
-        patient.save()
-        context = {"msg": "success", "patient_id": patient.id}
-        return JsonResponse(context)
+        if patient_name and patient_email:
+            patient = Patient(
+                name=patient_name, email=patient_email, therapist=request.user.therapist
+            )
+            patient.save()
+            context = {"msg": "success", "patient_id": patient.id}
+            return JsonResponse(context, status=200)
+        else:
+            return JsonResponse({"msg": "error"}, status=400)
     else:
         form = NewPatientForm()
         if request.method == "POST":

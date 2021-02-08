@@ -61,21 +61,29 @@ document.getElementById('new-patient-form').addEventListener('submit', function(
       },
       body: fd
     })
-    .then(resp => resp.json())
-    .then(resp => {
-        document.getElementById('new-patient-msg').classList.toggle("hidden");
-        const patientId = resp.patient_id;
-        document.getElementById('new-patient-form').reset();
-        var option = document.createElement("option");
-        option.text = patientName + " - " + patientEmail;
-        option.value = patientId;
-        var select = document.getElementById("selected-patient");
-        select.appendChild(option);
-        select.value = patientId;
-        setTimeout(function() {
+    .then(async (resp) => {
+        const response = await resp.json()
+        if (resp.status !== 200) {
+            document.getElementById('error-patient-msg').classList.toggle("hidden");
+            setTimeout(function() {
+                document.getElementById('error-patient-msg').classList.toggle("hidden");
+            }, 3000);
+        } else {
             document.getElementById('new-patient-msg').classList.toggle("hidden");
-        }, 3000);
+            const patientId = response.patient_id;
+            document.getElementById('new-patient-form').reset();
+            var option = document.createElement("option");
+            option.text = patientName + " - " + patientEmail;
+            option.value = patientId;
+            var select = document.getElementById("selected-patient");
+            select.appendChild(option);
+            select.value = patientId;
+            setTimeout(function() {
+                document.getElementById('new-patient-msg').classList.toggle("hidden");
+            }, 3000);
+        }
     })
+    .catch(error => console.log(error))
 })
 
 const sendButtons = document.getElementsByClassName('send-email-btn');
