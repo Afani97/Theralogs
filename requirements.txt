@@ -14,8 +14,10 @@ Django==3.1.6
 django-appconf==1.0.4
 django-background-tasks==1.2.5
 django-compat==1.0.15
+django-cryptography==1.0
 django-csp==3.7
 django-otp==1.0.2
+django-session-timeout==0.1.0
 djangorestframework==3.12.2
 djangorestframework-simplejwt==4.6.0
 html5lib==1.1
