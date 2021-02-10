@@ -107,7 +107,7 @@ class TestMainViews(TestCase):
 
     @mock.patch.object(background_tasks, "send_email_transcript")
     def test_transcribe_webhook(self, send_email_mock):
-        send_email_mock.return_value = {}
+        send_email_mock.return_value = True
         self.client.login(username="therapist@test.com", password="Apple101!")
         json_dict = {"status": "completed", "transcript_id": str(uuid.uuid4())}
         response = self.client.post(
@@ -119,7 +119,7 @@ class TestMainViews(TestCase):
 
     @mock.patch.object(background_tasks, "send_email_transcript")
     def test_transcribe_webhook_not_complete_failed(self, send_email_mock):
-        send_email_mock.return_value = {}
+        send_email_mock.return_value = True
         self.client.login(username="therapist@test.com", password="Apple101!")
         json_dict = {"status": "error", "transcript_id": str(uuid.uuid4())}
         response = self.client.post(

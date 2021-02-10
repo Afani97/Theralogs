@@ -52,6 +52,7 @@ class background_tasks:
     @staticmethod
     @background(schedule=5)
     def resend_email_to_patient(session_id):
+        print("Resend email")
         session = TLSession.objects.get(id=session_id)
         email_manager.send_email(session=session)
         return True

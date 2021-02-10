@@ -36,7 +36,7 @@ class AudioUploadView(APIView):
                 temp_file_path=my_file.temporary_file_path()
             )
 
-            task = background_tasks.create_transcribe.now(upload_url, tl_session.id)
+            task = background_tasks.create_transcribe(upload_url, tl_session.id)
 
             if task:
                 return JsonResponse({"msg": "success"})
@@ -86,7 +86,7 @@ class ResendSessionPDFView(APIView):
         if session_id:
             session = TLSession.objects.filter(id=session_id).exists()
             if session:
-                task = background_tasks.resend_email_to_patient.now(str(session_id))
+                task = background_tasks.resend_email_to_patient(str(session_id))
                 if task:
                     return JsonResponse({"msg": "success"})
         return JsonResponse({"msg": "error"}, status=400)
