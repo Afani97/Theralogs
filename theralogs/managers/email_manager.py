@@ -20,8 +20,6 @@ class email_manager:
         context = {
             "transcript": json.loads(session.recording_json),
             "date_created": session.created_at,
-            "therapist": session.patient.therapist.name,
-            "patient": session.patient.name,
         }
 
         pdf = render_to_pdf(context)
