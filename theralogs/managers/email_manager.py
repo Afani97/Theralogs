@@ -11,7 +11,9 @@ class email_manager:
     @classmethod
     def send_email(cls, session):
         msg = EmailMessage()
-        msg["Subject"] = "Testing out theralogs email from Namecheap!"
+        msg[
+            "Subject"
+        ] = f"audio transcription of your session with {session.patient.therapist.name}"
         msg["From"] = config("NAMECHEAP_EMAIL")
         msg["To"] = session.patient.email
 
@@ -24,7 +26,10 @@ class email_manager:
 
         pdf = render_to_pdf(context)
         msg.add_attachment(
-            pdf, maintype="application", subtype="octet-stream", filename="patient.pdf"
+            pdf,
+            maintype="application",
+            subtype="octet-stream",
+            filename="transcription.pdf",
         )
 
         with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
