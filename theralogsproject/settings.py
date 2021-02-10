@@ -57,6 +57,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django_session_timeout.middleware.SessionTimeoutMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -231,3 +232,9 @@ SIMPLE_JWT = {
 
 # DJANGO BACKGROUND TASKS
 BACKGROUND_TASK_RUN_ASYNC = True
+
+
+# SESSION TIMOUT
+SESSION_EXPIRE_SECONDS = 60 * 60 * 24  # 24 hours
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = "login/"

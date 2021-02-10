@@ -1,5 +1,17 @@
 {% extends 'theralogs/base.html' %}
 
+{% load static %}
+
+
+{% block js %}
+    <!-- dropzone js & css -->
+    <link rel="stylesheet" href="{% static 'dropzone/basic.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dropzone/dropzone.min.css' %}">
+    <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
+
+    <script src="{% static 'main.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
 
 <div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="file-success-msg">

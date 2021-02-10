@@ -8,12 +8,7 @@
 
     <link rel="stylesheet" href="{% static 'style.min.css' %}">
 
-    <!-- dropzone js & css -->
-    <link rel="stylesheet" href="{% static 'dropzone/basic.min.css' %}">
-    <link rel="stylesheet" href="{% static 'dropzone/dropzone.min.css' %}">
-    <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
-
-    <script src="{% static 'main.js' %}" defer></script>
+    {% block js %}{% endblock %}
 
     <title>Theralogs</title>
     <link rel="shortcut icon" type="image/jpg" href="{% static 'img/favicon.ico' %}" />
@@ -45,9 +40,6 @@
     {% block content %}
     {% endblock %}
 </div>
-
-{% block js %}
-{% endblock %}
 
 </body>
 </html>
