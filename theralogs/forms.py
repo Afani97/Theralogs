@@ -66,7 +66,11 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = Therapist
-        fields = ("name", "email", "license_id", "city", "state")
+        fields = (
+            "name",
+            "email",
+            "license_id",
+        )
         exclude = ("user",)
 
 

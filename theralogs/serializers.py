@@ -14,7 +14,7 @@ class TherapistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Therapist
-        fields = ("id", "user", "name", "license_id", "city", "state", "created_at")
+        fields = ("id", "user", "name", "license_id", "created_at")
 
 
 class TLSessionSerializer(serializers.ModelSerializer):
