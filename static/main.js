@@ -20,24 +20,39 @@ const myDropzone = new Dropzone("#my-dropzone", {
     url: "file-upload/",
     maxFiles: 1,
     maxFilesize: 50, // 50MB
+    parallelUploads: 1,
     acceptedFiles: '.wav,.mp3,.mp4',
     dictDefaultMessage: 'Drop a file here to upload',
-    sending: function(file, xhr, formData) {
-        const patientId = document.getElementById('selected-patient').value;
-        formData.append('patient-id', patientId);
-        myDropzone.processQueue();
+    autoProcessQueue: false,
+    addRemoveLinks: true,
+    init: function() {
+        const submitButton = document.querySelector("#upload-btn")
+        const myDropzone = this;
+        submitButton.addEventListener("click", function() {
+            const patientId = document.getElementById('selected-patient').value;
+            if (patientId === "") {
+                alert("Please select a patient to upload!")
+            } else {
+                myDropzone.processQueue();
+            }
+        });
+
+        myDropzone.on("sending", function(file, xhr, formData) {
+            const patientId = document.getElementById('selected-patient').value;
+            formData.append('patient-id', patientId);
+        });
+
+        myDropzone.on("complete", function(file) {
+          setTimeout(function() {
+            myDropzone.removeAllFiles();
+            document.getElementById('file-success-msg').classList.toggle("hidden");
+            setTimeout(function() {
+                document.getElementById('file-success-msg').classList.toggle("hidden");
+            }, 3000);
+          }, 1000);
+        });
     },
 })
-
-myDropzone.on("complete", function(file) {
-  setTimeout(function() {
-    myDropzone.removeAllFiles();
-    document.getElementById('file-success-msg').classList.toggle("hidden");
-    setTimeout(function() {
-        document.getElementById('file-success-msg').classList.toggle("hidden");
-    }, 3000);
-  }, 1000);
-});
 
 
 document.getElementById('new-patient-form').addEventListener('submit', function(e) {

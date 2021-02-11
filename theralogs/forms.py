@@ -11,22 +11,57 @@ from theralogs.models import Therapist, Patient
 
 
 class RegisterForm(UserCreationForm, forms.ModelForm):
-    email = forms.EmailField(label="Email")
-    first_name = forms.CharField(label="First name")
+    email = forms.EmailField(
+        label="Email",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "example@test.com"}),
+    )
+    first_name = forms.CharField(
+        label="First name",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Tom"}),
+    )
+    license_id = forms.CharField(
+        label="License ID",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "23524525"}),
+    )
+
+    password1 = forms.CharField(
+        label="Passsword",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "*********", "type": "password"}),
+    )
+
+    password2 = forms.CharField(
+        label="Confirm Password",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "*********", "type": "password"}),
+    )
 
     class Meta:
         model = User
         fields = (
             "first_name",
             "email",
+            "license_id",
             "password1",
+            "password2",
         )
 
 
 class LoginForm(forms.ModelForm):
-    email = forms.EmailField(label="Email", required=True)
+    email = forms.EmailField(
+        label="Email",
+        required=True,
+        widget=forms.EmailInput(attrs={"placeholder": "tom@test.com"}),
+    )
     password = forms.CharField(
-        label="Password", widget=forms.PasswordInput, required=True
+        label="Password",
+        widget=forms.PasswordInput(
+            attrs={"placeholder": "*********", "type": "password"}
+        ),
+        required=True,
     )
 
     def clean(self):

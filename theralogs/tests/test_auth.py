@@ -42,6 +42,7 @@ class TestAuthViews(TestCase):
             {
                 "first_name": "Thomas",
                 "email": "thomas@test.com",
+                "license_id": "1234567",
                 "password1": "Apple101!",
                 "password2": "Apple101!",
             },

@@ -23,11 +23,15 @@ def signup_user(request):
                 user = authenticate(username=user.username, password=raw_password)
                 if user:
                     name = form.cleaned_data.get("first_name")
+                    license_id = form.cleaned_data.get("license_id")
                     stripe_customer_id = stripe_manager.register_customer(
                         email=user.email
                     )
                     account = Therapist(
-                        name=name, user=user, stripe_customer_id=stripe_customer_id
+                        name=name,
+                        user=user,
+                        license_id=license_id,
+                        stripe_customer_id=stripe_customer_id,
                     )
                     account.save()
                     login(request, user)

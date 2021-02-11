@@ -10,6 +10,11 @@
     <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
 
     <script src="{% static 'main.js' %}" defer></script>
+    <style>
+        .dropzone {
+            border: none !important;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -38,6 +43,7 @@
   </span>
 </div>
 
+{% if request.user.therapist.stripe_customer_id != null %}
 <form action="new-patient/" method="POST" id="new-patient-form" class="max-w-2xl mx-auto my-10">
     {% csrf_token %}
     <div class="flex justify-evenly">
@@ -51,27 +57,49 @@
         </label>
         <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new patient</button>
     </div>
-
 </form>
-
-<form action="file-upload/" method="POST" class="dropzone max-w-2xl mx-auto my-10 rounded border-1 border-gray-200" id="my-dropzone">
-    {% csrf_token %}
-    <div>
-      <label for="selected-patient">Select Patient</label>
-      <div>
-        <select id="selected-patient" name="selected-patient" class="tl-input">
-          {% for patient in patients %}
-          <option value="{{ patient.id }}">{{ patient.name }} - {{patient.email}}</option>
-          {% endfor %}
-        </select>
-      </div>
+{% else %}
+    <div class="text-white px-6 py-4 border-0 rounded max-w-2xl mx-auto bg-blue-500">
+      <a href="{% url 'update_payment' %}" class="inline-block align-middle mr-8">
+        Add your payment info in order to start recording audio session with patients
+      </a>
     </div>
-    <div class="fallback">
-        <input name="file" type="file" multiple />
-    </div>
-</form>
+{% endif %}
 
-<div class="max-w-3xl mx-auto my-10">
+<div class="max-w-3xl mx-auto border-2 border-gray-300 rounded-lg p-3">
+    <form action="file-upload/" method="POST" id="my-dropzone" class="dropzone">
+        {% csrf_token %}
+        <div>
+            <div class="text-center">
+                <label for="selected-patient">Select Patient</label>
+            </div>
+
+          <div>
+            <select id="selected-patient" name="selected-patient" class="tl-input">
+            {% for patient in patients %}
+                {% if forloop.first %}
+                    <option value="{{ patient.id }}" selected>{{ patient.name }} - {{patient.email}}</option>
+                {% else %}
+                    <option value="{{ patient.id }}">{{ patient.name }} - {{patient.email}}</option>
+                {% endif %}
+            {% empty %}
+             <option value="">Add a new patient above</option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+        </div>
+    </form>
+    <div class="flex items-center">
+        <button id="upload-btn" class="tl-button mt-2 mx-auto">UPLOAD</button>
+    </div>
+
+</div>
+
+
+<div class="max-w-3xl mx-auto my-20">
    <div class="flex justify-between ">
         <a href="{% url 'filter_main' prev_month %}" class="tl-button">{{prev_month}}</a>
         <p>{{curr_month | date:"M-Y"}}</p>
