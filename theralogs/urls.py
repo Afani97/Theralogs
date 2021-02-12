@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import (
 
 from django.urls import path
 from .views import main, auth, profile, patient, rn
+from .views.rn import CustomTokenObtainPairView
 
 urlpatterns = [
     path("", main.LandingPage.as_view(), name="landing-page"),
@@ -48,6 +49,8 @@ urlpatterns = [
 
 # JWT
 urlpatterns += [
-    path("rn/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path(
+        "rn/auth/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"
+    ),
     path("rn/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

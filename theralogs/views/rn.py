@@ -3,11 +3,21 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from theralogs.models import Patient, TLSession
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
-from ..serializers import TherapistSerializer, TLSessionSerializer
+from ..serializers import (
+    TherapistSerializer,
+    TLSessionSerializer,
+    CustomTokenObtainPairSerializer,
+)
 from ..tasks import background_tasks
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    token_obtain_pair = TokenObtainPairView.as_view()
 
 
 class MainView(APIView):
