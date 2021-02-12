@@ -12,7 +12,7 @@ from theralogsproject.settings import DEBUG
 
 class background_tasks:
     @staticmethod
-    @background(schedule=5)
+    @background(schedule=60)
     def create_transcribe(upload_url, session_id):
         webhook_base = "http://489a70fcc3c9.ngrok.io"
         if not DEBUG:
@@ -23,7 +23,7 @@ class background_tasks:
         return task
 
     @staticmethod
-    @background(schedule=5)
+    @background(schedule=60)
     def send_email_transcript(session_id, transcript_id):
         session = TLSession.objects.get(id=session_id)
 
@@ -50,7 +50,7 @@ class background_tasks:
         return True
 
     @staticmethod
-    @background(schedule=5)
+    @background(schedule=60)
     def resend_email_to_patient(session_id):
         session = TLSession.objects.get(id=session_id)
         email_manager.send_email(session=session)
