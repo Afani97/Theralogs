@@ -5,15 +5,36 @@
 
 {% block content %}
 
-<div class="max-w-xl mx-auto">
+<div class="max-w-lg mx-auto">
+
     <h1 class="text-3xl mb-4">Login</h1>
 
     {% if form.errors %}
-      <p class="text-red-600 font-bold">Error updating profile</p>
+        <p class="text-red-600 font-bold">Email or password are not correct</p>
     {% endif %}
 
-    {% include 'theralogs/partials/_generic_form.html' with btn_title='Login' %}
-    <p class="flex justify-center mb-4">
+    <form method="post" class="mb-8 space-y-4">
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <label class="block">
+            <span class="text-gray-700">Email:</span>
+            <input class="tl-input" type="email" name="email" required id="id_email" placeholder="example@test.com">
+        </label>
+
+        <label class="block">
+            <span>Password:</span>
+            <input class="tl-input" type="password" name="password" required id="id_password" placeholder="**********">
+        </label>
+
+        <div class="flex justify-center">
+            <button type="submit" class="tl-button">Login</button>
+        </div>
+
+    </form>
+
+    <p class="flex justify-center">
         <a class="text-sm underline" href="{% url 'signup' %}">Signup?</a>
     </p>
 </div>

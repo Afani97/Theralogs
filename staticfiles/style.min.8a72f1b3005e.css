@@ -522,6 +522,7 @@ video {
       [type='text'],
       [type='email'],
       [type='url'],
+      [type='password'],
       [type='date'],
       [type='month'],
       [type='time'],
@@ -544,7 +545,7 @@ video {
   line-height: 1.5rem;
 }
 
-[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='date']:focus, [type='month']:focus, [type='time']:focus, [multiple]:focus, textarea:focus, select:focus {
+[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='date']:focus, [type='month']:focus, [type='time']:focus, [multiple]:focus, textarea:focus, select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
@@ -1050,6 +1051,10 @@ select {
   margin-bottom: 2rem;
 }
 
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
 .ml-10 {
   margin-left: 2.5rem;
 }
@@ -1064,6 +1069,10 @@ select {
 
 .mb-20 {
   margin-bottom: 5rem;
+}
+
+.max-w-lg {
+  max-width: 32rem;
 }
 
 .max-w-xl {

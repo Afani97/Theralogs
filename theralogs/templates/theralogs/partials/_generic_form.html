@@ -5,13 +5,11 @@
     {% for field in form %}
         <label class="block">
             <span class="text-gray-700">{{ field.label }}:</span>
-            {{ field | addclass:'tl-input'}}
+            {{ field | addclass:'tl-input' }}
         </label>
     {% endfor %}
-    <div class="flex {% if cancel_url %} content-center justify-between {% else %} items-center {% endif %}">
-        {% if cancel_url %}
-            <a class="self-center" href="{% url cancel_url %}">Cancel</a>
-        {% endif %}
-        <button class="tl-button {% if not cancel_url %} mx-auto {% endif %}" type="submit">{{btn_title}}</button>
+    <div class="flex content-center justify-between">
+        <a class="self-center" href="{% url cancel_url %}">Cancel</a>
+        <button class="tl-button" type="submit">{{btn_title}}</button>
     </div>
 </form>

@@ -24,22 +24,23 @@ class AudioUploadView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        patient_id = request.POST.get("patient-id")
-        patient = Patient.objects.get(id=patient_id)
+        if request.user.therapist.stripe_payment_method_id:
+            patient_id = request.POST.get("patient-id")
+            patient = Patient.objects.get(id=patient_id)
 
-        my_file = request.FILES.get("file")
-        if my_file:
-            tl_session = TLSession(patient=patient, recording_length=0)
-            tl_session.save()
+            my_file = request.FILES.get("file")
+            if my_file:
+                tl_session = TLSession(patient=patient, recording_length=0)
+                tl_session.save()
 
-            upload_url = audio_transcribe_manager.upload_audio_file(
-                temp_file_path=my_file.temporary_file_path()
-            )
+                upload_url = audio_transcribe_manager.upload_audio_file(
+                    temp_file_path=my_file.temporary_file_path()
+                )
 
-            task = background_tasks.create_transcribe(upload_url, tl_session.id)
+                task = background_tasks.create_transcribe(upload_url, tl_session.id)
 
-            if task:
-                return JsonResponse({"msg": "success"})
+                if task:
+                    return JsonResponse({"msg": "success"})
         return JsonResponse({"msg": "error"}, status=400)
 
 

@@ -28,7 +28,7 @@ class RegisterForm(UserCreationForm, forms.ModelForm):
     )
 
     password1 = forms.CharField(
-        label="Passsword",
+        label="Password",
         required=True,
         widget=forms.TextInput(attrs={"placeholder": "*********", "type": "password"}),
     )

@@ -55,6 +55,9 @@ class TestRNViews(TestCase):
         api_client = APIClient()
         api_client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
 
+        self.therapist.stripe_payment_method_id = f"{uuid.uuid4()}"
+        self.therapist.save()
+
         audio_file_mock.return_value = "https://example.com/url"
         transcribe_mock.return_value = True
 
@@ -68,6 +71,30 @@ class TestRNViews(TestCase):
             {"patient-id": self.patient.id, "file": simple_file},
         )
         self.assertEquals(response.status_code, 200)
+
+    @mock.patch.object(
+        audio_transcribe_manager.audio_transcribe_manager, "upload_audio_file"
+    )
+    @mock.patch.object(background_tasks, "create_transcribe")
+    def test_file_upload_no_stripe_payment_failed(
+        self, transcribe_mock, audio_file_mock
+    ):
+        api_client = APIClient()
+        api_client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
+
+        audio_file_mock.return_value = "https://example.com/url"
+        transcribe_mock.return_value = True
+
+        simple_file = SimpleUploadedFile(
+            "TheraLogs-transcribe-example.mp4",
+            b"file_content",
+            content_type="video/mp4",
+        )
+        response = api_client.post(
+            reverse("rn_file_upload"),
+            {"patient-id": self.patient.id, "file": simple_file},
+        )
+        self.assertEquals(response.status_code, 400)
 
     def test_file_upload_error(self):
         api_client = APIClient()

@@ -4,14 +4,49 @@
 {% block title %} Signup {% endblock %}
 
 {% block content %}
-<div class="max-w-xl mx-auto">
+<div class="max-w-lg mx-auto">
+
     <h1 class="text-3xl mb-4">Signup</h1>
 
     {% if form.errors %}
-      <p class="text-red-600 font-bold">Error updating profile</p>
+        <p class="text-red-600 font-bold">Email or password are not correct</p>
     {% endif %}
 
-    {% include 'theralogs/partials/_generic_form.html' with btn_title='Sign up' %}
+    <form method="post" class="mb-8 space-y-4">
+        {% csrf_token %}
+
+        <label class="block">
+            <span class="text-gray-700">First name:</span>
+            <input class="tl-input" type="text" name="first_name" required id="id_first_name" placeholder="Tom">
+        </label>
+
+        <label class="block">
+            <span class="text-gray-700">Email:</span>
+            <input class="tl-input" type="email" name="email" required id="id_email" placeholder="example@test.com">
+        </label>
+
+        <label class="block">
+            <span class="text-gray-700">License ID:</span>
+            <input class="tl-input" type="text" name="license_id" required id="id_license_id" placeholder="123456789">
+        </label>
+
+        <label class="block">
+            <span class="text-gray-700">Password:</span>
+            <input class="tl-input" type="password" name="password1" autocomplete="new-password" required
+                   id="id_password1" placeholder="**********">
+        </label>
+
+        <label class="block">
+            <span class="text-gray-700">Confirm:</span>
+            <input class="tl-input" type="password" name="password2" autocomplete="new-password" required
+                   id="id_password2" placeholder="**********">
+        </label>
+
+        <div class="flex justify-center">
+            <button type="submit" class="tl-button">Sign up</button>
+        </div>
+    </form>
+
     <p class="flex justify-center mb-4">
         <a class="text-sm underline" href="{% url 'login' %}">Already have an account?</a>
     </p>
