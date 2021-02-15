@@ -17,11 +17,11 @@ function getCookie(name) {
 Dropzone.autoDiscover = false;
 
 const myDropzone = new Dropzone("#my-dropzone", {
-    url: "file-upload/",
+    url: `${window.location.origin}/main/file-upload/`,
     maxFiles: 1,
-    maxFilesize: 50, // 50MB
+    maxFilesize: 120, // 120MB
     parallelUploads: 1,
-    acceptedFiles: '.wav,.mp3,.mp4',
+    acceptedFiles: '.aiff,.wav,.mp3,.mp4,.m4a',
     dictDefaultMessage: 'Drop a file here to upload',
     autoProcessQueue: false,
     addRemoveLinks: true,
