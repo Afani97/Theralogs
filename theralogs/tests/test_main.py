@@ -29,7 +29,11 @@ class TestMainViews(TestCase):
             name="Jane", email="jane@test.com", therapist=self.therapist
         )
         self.session = TLSession.objects.create(
-            patient=self.patient, recording_length=0
+            patient=self.patient,
+            recording_length=0,
+            recording_json=json.dumps(
+                "[{'speaker': 'speaker_B', 'transcript': 'Good afternoon, Linda. Thanks for coming by. '} {'speaker': 'speaker_A', 'transcript': 'An art class.'}, {'speaker': 'speaker_B', 'transcript': 'Alright, sounds good. Thanks for saving by.'}]"
+            ),
         )
         self.client = Client()
 
@@ -60,6 +64,24 @@ class TestMainViews(TestCase):
     def test_main_view_failed(self):
         response = self.client.get(reverse("home"))
         self.assertEquals(response.status_code, 302)
+
+    def test_view_pdf(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+
+        response = self.client.get(
+            reverse("view_pdf", kwargs={"session_id": self.session.id}),
+        )
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_pdf_failed(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+
+        response = self.client.get(
+            reverse("view_pdf", kwargs={"session_id": uuid.uuid4()}),
+        )
+
+        self.assertEquals(response.status_code, 404)
 
     @mock.patch.object(
         audio_transcribe_manager.audio_transcribe_manager, "upload_audio_file"

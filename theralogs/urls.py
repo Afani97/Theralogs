@@ -11,6 +11,7 @@ urlpatterns = [
     path("", main.LandingPage.as_view(), name="landing-page"),
     path("main/", main.main_view, name="home"),
     path("main/file-upload/", main.file_upload, name="file_upload"),
+    path("main/pdf/<uuid:session_id>/", main.view_pdf, name="view_pdf"),
     path(
         "main/resend-email/<uuid:session_id>/", main.resend_email, name="resend_email"
     ),

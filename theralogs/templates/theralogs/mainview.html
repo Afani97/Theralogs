@@ -10,11 +10,6 @@
     <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
 
     <script src="{% static 'main.js' %}" defer></script>
-    <style>
-        .dropzone {
-            border: none !important;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
@@ -114,7 +109,7 @@
             <div class="grid grid-cols-1 gap-3 mx-2 my-2 divide-y-2">
                 {% for v in values %}
                     <div class="flex justify-between items-center">
-                        <p class="text-black mt-2"> {{v.patient.name}} </p>
+                        <a class="text-black mt-2" href="{% url 'view_pdf' session_id=v.id %}"> {{v.patient.name}} </a>
                         {% if v.recording_json %}
                         <button id="{{v.id}}" class="tl-button send-email-btn h-10 bg-blue-200 text-black hover:bg-blue-400 mt-2">
                             resend

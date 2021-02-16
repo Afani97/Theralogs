@@ -3,8 +3,15 @@ from collections import OrderedDict
 from datetime import datetime
 
 import dateutil.relativedelta
+from csp.decorators import csp_exempt
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseBadRequest,
+    Http404,
+    FileResponse,
+)
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
@@ -12,6 +19,7 @@ from django.views.generic import TemplateView
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
 from ..tasks import background_tasks
+from ..utils import render_to_pdf
 
 
 class LandingPage(TemplateView):
@@ -89,6 +97,26 @@ def file_upload(request):
                     return JsonResponse({"msg": "success"})
 
     return JsonResponse({"msg": "error"}, status=400)
+
+
+@login_required
+@csp_exempt
+def view_pdf(request, session_id):
+    if session_id:
+        try:
+            session = TLSession.objects.filter(id=session_id).first()
+        except TLSession.DoesNotExist:
+            session = None
+        if session:
+            context = {
+                "transcript": json.loads(session.recording_json),
+                "date_created": session.created_at,
+            }
+            pdf = render_to_pdf(context)
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response["Content-Disposition"] = "inline;filename=transcript.pdf"
+            return response
+    raise Http404()
 
 
 @login_required
