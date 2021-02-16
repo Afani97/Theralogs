@@ -11,10 +11,11 @@ def render_to_pdf(context_dict={}):
 
 def format_transcript_utterances(utterances):
     output = []
-    for turn in utterances:
-        output.append(
-            {"speaker": f"speaker_{turn['speaker']}", "transcript": turn["text"]}
-        )
+    if len(utterances) > 1:
+        for turn in utterances:
+            output.append(
+                {"speaker": f"speaker_{turn['speaker']}", "transcript": turn["text"]}
+            )
     return output
 
 

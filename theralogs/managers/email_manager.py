@@ -4,7 +4,8 @@ from email.message import EmailMessage
 
 from decouple import config
 
-from theralogs.utils import render_to_pdf
+from theralogs.managers.audio_transcribe_manager import audio_transcribe_manager
+from theralogs.utils import render_to_pdf, format_transcript_utterances
 
 
 class email_manager:
@@ -13,12 +14,19 @@ class email_manager:
         msg = EmailMessage()
         msg[
             "Subject"
-        ] = f"audio transcription of your session with {session.patient.therapist.name}"
+        ] = f"your audio transcription with {session.patient.therapist.name}"
         msg["From"] = config("NAMECHEAP_EMAIL")
         msg["To"] = session.patient.email
 
+        response_json = audio_transcribe_manager.get_transcript(
+            transcript_id=session.transcript_id
+        )
+
+        utterances = response_json["utterances"]
+        formatted_transcript = format_transcript_utterances(utterances)
+
         context = {
-            "transcript": json.loads(session.recording_json),
+            "transcript": formatted_transcript,
             "date_created": session.created_at,
         }
 

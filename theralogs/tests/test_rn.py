@@ -62,7 +62,7 @@ class TestRNViews(TestCase):
         transcribe_mock.return_value = True
 
         simple_file = SimpleUploadedFile(
-            "TheraLogs-transcribe-example.mp4",
+            "transcribe.mp4",
             b"file_content",
             content_type="video/mp4",
         )
@@ -86,7 +86,7 @@ class TestRNViews(TestCase):
         transcribe_mock.return_value = True
 
         simple_file = SimpleUploadedFile(
-            "TheraLogs-transcribe-example.mp4",
+            "transcribe.mp4",
             b"file_content",
             content_type="video/mp4",
         )

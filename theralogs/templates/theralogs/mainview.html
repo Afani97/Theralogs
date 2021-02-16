@@ -110,7 +110,7 @@
                 {% for v in values %}
                     <div class="flex justify-between items-center">
                         <a class="text-black mt-2" href="{% url 'view_pdf' session_id=v.id %}"> {{v.patient.name}} </a>
-                        {% if v.recording_json %}
+                        {% if v.transcript_id %}
                         <button id="{{v.id}}" class="tl-button send-email-btn h-10 bg-blue-200 text-black hover:bg-blue-400 mt-2">
                             resend
                         </button>

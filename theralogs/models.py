@@ -30,6 +30,8 @@ class Patient(models.Model):
 class TLSession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    recording_json = models.TextField(blank=True, null=True, editable=False)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     recording_length = models.FloatField()
+    transcript_id = models.CharField(
+        max_length=200, null=True, blank=True, editable=False
+    )

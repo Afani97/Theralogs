@@ -10,16 +10,16 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     Http404,
-    FileResponse,
 )
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
 from ..tasks import background_tasks
-from ..utils import render_to_pdf
+from ..utils import render_to_pdf, format_transcript_utterances
 
 
 class LandingPage(TemplateView):
@@ -107,16 +107,24 @@ def view_pdf(request, session_id):
             session = TLSession.objects.filter(id=session_id).first()
         except TLSession.DoesNotExist:
             session = None
-        if session:
+        if session and session.transcript_id:
+            response_json = audio_transcribe_manager.get_transcript(
+                transcript_id=session.transcript_id
+            )
+
+            utterances = response_json["utterances"]
+            formatted_transcript = format_transcript_utterances(utterances)
+
             context = {
-                "transcript": json.loads(session.recording_json),
+                "transcript": formatted_transcript,
                 "date_created": session.created_at,
             }
+
             pdf = render_to_pdf(context)
             response = HttpResponse(pdf, content_type="application/pdf")
             response["Content-Disposition"] = "inline;filename=transcript.pdf"
             return response
-    raise Http404()
+    return redirect(reverse("home"))
 
 
 @login_required

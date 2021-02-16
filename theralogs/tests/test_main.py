@@ -29,11 +29,7 @@ class TestMainViews(TestCase):
             name="Jane", email="jane@test.com", therapist=self.therapist
         )
         self.session = TLSession.objects.create(
-            patient=self.patient,
-            recording_length=0,
-            recording_json=json.dumps(
-                "[{'speaker': 'speaker_B', 'transcript': 'Good afternoon, Linda. Thanks for coming by. '} {'speaker': 'speaker_A', 'transcript': 'An art class.'}, {'speaker': 'speaker_B', 'transcript': 'Alright, sounds good. Thanks for saving by.'}]"
-            ),
+            patient=self.patient, recording_length=0, transcript_id=str(uuid.uuid4())
         )
         self.client = Client()
 
@@ -65,7 +61,11 @@ class TestMainViews(TestCase):
         response = self.client.get(reverse("home"))
         self.assertEquals(response.status_code, 302)
 
-    def test_view_pdf(self):
+    @mock.patch.object(
+        audio_transcribe_manager.audio_transcribe_manager, "get_transcript"
+    )
+    def test_view_pdf(self, transcript_mock):
+        transcript_mock.return_value = {"utterances": []}
         self.client.login(username="therapist@test.com", password="Apple101!")
 
         response = self.client.get(
@@ -81,7 +81,7 @@ class TestMainViews(TestCase):
             reverse("view_pdf", kwargs={"session_id": uuid.uuid4()}),
         )
 
-        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response.status_code, 302)
 
     @mock.patch.object(
         audio_transcribe_manager.audio_transcribe_manager, "upload_audio_file"
@@ -96,7 +96,7 @@ class TestMainViews(TestCase):
         transcribe_mock.return_value = True
 
         simple_file = SimpleUploadedFile(
-            "TheraLogs-transcribe-example.mp4",
+            "transcribe.mp4",
             b"file_content",
             content_type="video/mp4",
         )
@@ -119,7 +119,7 @@ class TestMainViews(TestCase):
         transcribe_mock.return_value = True
 
         simple_file = SimpleUploadedFile(
-            "TheraLogs-transcribe-example.mp4",
+            "transcribe.mp4",
             b"file_content",
             content_type="video/mp4",
         )
