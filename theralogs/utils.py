@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
@@ -26,3 +28,10 @@ def read_file(filename, chunk_size=5242880):
             if not data:
                 break
             yield data
+
+
+def format_date(month, year):
+    date_str = f"01/{month}/{year}"
+    format_str = "%d/%m/%Y"
+    date = datetime.strptime(date_str, format_str).date()
+    return date

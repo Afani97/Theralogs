@@ -1,5 +1,4 @@
 import json
-from collections import OrderedDict
 from datetime import datetime
 
 import dateutil.relativedelta
@@ -9,7 +8,6 @@ from django.http import (
     JsonResponse,
     HttpResponse,
     HttpResponseBadRequest,
-    Http404,
 )
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -19,7 +17,7 @@ from django.views.generic import TemplateView
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
 from ..tasks import background_tasks
-from ..utils import render_to_pdf, format_transcript_utterances
+from ..utils import render_to_pdf, format_transcript_utterances, format_date
 
 
 class LandingPage(TemplateView):
@@ -28,43 +26,22 @@ class LandingPage(TemplateView):
 
 @login_required
 def main_view(request, filter_date=None):
-    therapist = request.user.therapist
-    patients = therapist.patient_set.all()
-
     current_date = datetime.now()
     current_month = current_date.month
     current_year = current_date.year
-    sessions_by_date = {}
 
     if filter_date:
         current_month = int(filter_date.split("-")[0])
         current_year = int(filter_date.split("-")[1])
+        current_date = format_date(current_month, current_year)
 
-    for patient in patients:
-        sessions = patient.tlsession_set.filter(created_at__month=current_month).filter(
-            created_at__year=current_year
-        )
-        for s in sessions:
-            session_date = s.created_at.date()
-            if session_date in sessions_by_date.keys():
-                current_sessions = sessions_by_date[session_date]
-                current_sessions.append(s)
-                sessions_by_date[session_date] = current_sessions
-            else:
-                sessions_by_date[session_date] = [s]
-
-    ordered_sessions = OrderedDict(sorted(sessions_by_date.items(), key=lambda t: t[0]))
-
-    if filter_date:
-        date_str = f"01/{current_month}/{current_year}"
-        format_str = "%d/%m/%Y"
-        current_date = datetime.strptime(date_str, format_str).date()
+    ordered_sessions = request.user.therapist.get_sessions(current_month, current_year)
 
     prev_month = current_date + dateutil.relativedelta.relativedelta(months=-1)
     next_month = current_date + dateutil.relativedelta.relativedelta(months=1)
 
     context = {
-        "patients": patients,
+        "patients": request.user.therapist.patient_set.all(),
         "sessions": ordered_sessions,
         "prev_month": f"{prev_month.month}-{prev_month.year}",
         "curr_month": current_date,
