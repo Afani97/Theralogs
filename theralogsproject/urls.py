@@ -37,14 +37,18 @@ admin_site.register(Patient)
 
 def refund_charge(modeladmin, request, queryset):
     for session in queryset:
-        refunded_session = session.refund_charge()
-        if refunded_session:
+        refunded = session.refund_charge()
+        print(refunded)
+        if refunded is True:
+            messages.add_message(request, messages.WARNING, "Session already refunded")
+        elif refunded is False:
             messages.add_message(request, messages.SUCCESS, "Session has been refunded")
+            session.refunded = True
+            session.save()
         else:
             messages.add_message(
                 request, messages.ERROR, "Session unable to be refunded"
             )
-        print(refunded_session)
 
 
 refund_charge.short_description = "Refund session"

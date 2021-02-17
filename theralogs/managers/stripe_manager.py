@@ -62,7 +62,7 @@ class stripe_manager:
         try:
             response = stripe.Refund.create(payment_intent=refund_id)
         except:
-            return False
+            return None
         if response["status"] == "succeeded":
             return True
         else:

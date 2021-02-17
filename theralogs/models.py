@@ -39,7 +39,10 @@ class TLSession(models.Model):
     stripe_refund_id = models.CharField(
         max_length=200, null=True, blank=True, editable=False
     )
+    refunded = models.BooleanField(default=False)
 
     def refund_charge(self):
-        refunded = stripe_manager.refund_charge_session(self.stripe_refund_id)
-        return refunded
+        if self.refunded is False:
+            return stripe_manager.refund_charge_session(self.stripe_refund_id)
+        else:
+            return True
