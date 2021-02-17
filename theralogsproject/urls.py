@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django_otp.admin import OTPAdminSite
+from django.contrib import admin, messages
 from django.contrib.auth.models import User
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
@@ -30,9 +31,33 @@ admin_site.register(TOTPDevice, TOTPDeviceAdmin)
 
 
 # Register your models here.
-admin_site.register(TLSession)
 admin_site.register(Therapist)
 admin_site.register(Patient)
+
+
+def refund_charge(modeladmin, request, queryset):
+    for session in queryset:
+        refunded_session = session.refund_charge()
+        if refunded_session:
+            messages.add_message(request, messages.SUCCESS, "Session has been refunded")
+        else:
+            messages.add_message(
+                request, messages.ERROR, "Session unable to be refunded"
+            )
+        print(refunded_session)
+
+
+refund_charge.short_description = "Refund session"
+
+
+class TLSessionAdmin(admin.ModelAdmin):
+    list_display = ["id", "created_at"]
+    actions = [
+        refund_charge,
+    ]
+
+
+admin_site.register(TLSession, TLSessionAdmin)
 
 
 from django.urls import path, include

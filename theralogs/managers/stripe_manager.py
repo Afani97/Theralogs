@@ -4,7 +4,7 @@ import stripe
 
 class stripe_manager:
     stripe_api_key = config("STRIPE_SECRET")
-    cost_per_minute = 190  # Should be 19 for prod
+    cost_per_minute = 190  # Should be 9 for prod
 
     @classmethod
     def register_customer(cls, email):
@@ -46,7 +46,7 @@ class stripe_manager:
     def charge_customer(cls, recording_time, patient):
         total_charge = int(recording_time * cls.cost_per_minute)
         stripe.api_key = cls.stripe_api_key
-        stripe.PaymentIntent.create(
+        charge = stripe.PaymentIntent.create(
             amount=total_charge,
             currency="usd",
             customer=patient.therapist.stripe_customer_id,
@@ -54,3 +54,16 @@ class stripe_manager:
             off_session=True,
             confirm=True,
         )
+        return charge["id"]
+
+    @classmethod
+    def refund_charge_session(cls, refund_id):
+        stripe.api_key = cls.stripe_api_key
+        try:
+            response = stripe.Refund.create(payment_intent=refund_id)
+        except:
+            return False
+        if response["status"] == "succeeded":
+            return True
+        else:
+            return False

@@ -11,7 +11,7 @@ class background_tasks:
     @staticmethod
     @background(schedule=60)
     def create_transcribe(upload_url, session_id):
-        webhook_base = "http://6cc54670dc71.ngrok.io"
+        webhook_base = "http://5f3b0c94012c.ngrok.io"
         if not DEBUG:
             webhook_base = "https://www.usetheralogs.com"
         task = audio_transcribe_manager.upload_audio_url(
@@ -35,9 +35,11 @@ class background_tasks:
         session.save()
 
         total_minutes_of_recording = session.recording_length / 60
-        stripe_manager.charge_customer(
+        refund_id = stripe_manager.charge_customer(
             recording_time=total_minutes_of_recording, patient=session.patient
         )
+        session.stripe_refund_id = refund_id
+        session.save()
 
         email_manager.send_email(session=session)
 

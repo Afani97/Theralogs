@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from django_cryptography.fields import encrypt
+from .managers.stripe_manager import stripe_manager
 
 
 class Therapist(models.Model):
@@ -35,3 +36,10 @@ class TLSession(models.Model):
     transcript_id = models.CharField(
         max_length=200, null=True, blank=True, editable=False
     )
+    stripe_refund_id = models.CharField(
+        max_length=200, null=True, blank=True, editable=False
+    )
+
+    def refund_charge(self):
+        refunded = stripe_manager.refund_charge_session(self.stripe_refund_id)
+        return refunded
