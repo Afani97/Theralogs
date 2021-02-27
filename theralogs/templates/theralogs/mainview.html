@@ -32,12 +32,6 @@
   </span>
 </div>
 
-<div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="email-sent-msg">
-  <span class="inline-block align-middle mr-8">
-    <b class="capitalize">Awesome!</b> Email is on the way!
-  </span>
-</div>
-
 {% if request.user.therapist.stripe_payment_method_id != null %}
 <form action="new-patient/" method="POST" id="new-patient-form" class="max-w-2xl mx-auto my-10">
     {% csrf_token %}
@@ -100,6 +94,12 @@
         <p>{{curr_month | date:"M-Y"}}</p>
         <a href="{% url 'filter_main' next_month %}" class="tl-button">{{next_month}}</a>
     </div>
+</div>
+
+<div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="email-sent-msg">
+  <span class="inline-block align-middle mr-8">
+    <b class="capitalize">Awesome!</b> Email is on the way!
+  </span>
 </div>
 
 <div class="grid grid-cols-3 gap-3 max-w-3xl mx-auto my-10">
