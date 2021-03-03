@@ -4,6 +4,7 @@ from collections import OrderedDict
 from django.contrib.auth.models import User
 from django.db import models
 from django_cryptography.fields import encrypt
+from enum import IntEnum
 
 from .managers.stripe_manager import stripe_manager
 
@@ -52,6 +53,15 @@ class Patient(models.Model):
 
 
 class TLSession(models.Model):
+    class ProgressTypes(IntEnum):
+        PENDING = 1
+        COMPLETED = 2
+        FAILED = 3
+
+        @classmethod
+        def choices(cls):
+            return [(key.value, key.name) for key in cls]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -63,6 +73,9 @@ class TLSession(models.Model):
         max_length=200, null=True, blank=True, editable=False
     )
     refunded = models.BooleanField(default=False)
+    progress = models.IntegerField(
+        choices=ProgressTypes.choices(), default=ProgressTypes.PENDING
+    )
 
     def refund_charge(self):
         if self.refunded is False:

@@ -47,7 +47,9 @@ class AudioUploadView(APIView):
                     temp_file_path=my_file.temporary_file_path()
                 )
 
-                task = background_tasks.create_transcribe(upload_url, tl_session.id)
+                task = background_tasks.create_transcribe(
+                    upload_url, str(tl_session.id)
+                )
 
                 if task:
                     return JsonResponse({"msg": "success"})

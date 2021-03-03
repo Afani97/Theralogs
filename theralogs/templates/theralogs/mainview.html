@@ -90,9 +90,9 @@
 
 <div class="max-w-3xl mx-auto my-20">
    <div class="flex justify-between ">
-        <a href="{% url 'filter_main' prev_month %}" class="tl-button">{{prev_month}}</a>
+        <a href="{% url 'filter_main' prev_month %}" class="tl-button bg-blue-200 text-black hover:bg-blue-400">{{prev_month}}</a>
         <p>{{curr_month | date:"M-Y"}}</p>
-        <a href="{% url 'filter_main' next_month %}" class="tl-button">{{next_month}}</a>
+        <a href="{% url 'filter_main' next_month %}" class="tl-button bg-blue-200 text-black hover:bg-blue-400">{{next_month}}</a>
     </div>
 </div>
 
@@ -108,18 +108,26 @@
             <h1 class="text-xl text-center">{{key | date:"SHORT_DATE_FORMAT"}}</h1>
             <div class="grid grid-cols-1 gap-3 mx-2 my-2 divide-y-2">
                 {% for v in values %}
-                    <div class="flex justify-between items-center">
-                        <a class="text-black mt-2" href="{% url 'view_pdf' session_id=v.id %}"> {{v.patient.name}} </a>
-                        {% if v.transcript_id %}
-                        <button id="{{v.id}}" class="tl-button send-email-btn h-10 bg-blue-200 text-black hover:bg-blue-400 mt-2">
+                <div class="grid grid-cols-2 gap-4">
+                    {% if v.progress == 2 %}
+                        <a class="text-black mt-4 col-span-1" href="{% url 'view_pdf' session_id=v.id %}"> {{v.patient.name}} </a>
+                    {% else %}
+                        <a class="text-black mt-4 col-span-1"> {{v.patient.name}} </a>
+                    {% endif %}
+                    {% if v.progress == 2 %}
+                        <button id="{{v.id}}" class="col-span-1 tl-button send-email-btn h-10 bg-blue-200 text-black hover:bg-blue-400 mt-2">
                             resend
                         </button>
-                        {% else %}
-                        <button disabled class="tl-button h-10 bg-gray-200 text-black mt-2 hover:bg-gray-200">
+                    {% elif v.progress == 3 %}
+                        <button disabled class="col-span-1 tl-button h-10 bg-red-200 text-black mt-2 hover:bg-red-200">
+                            failed
+                        </button>
+                    {% else %}
+                        <button disabled class="col-span-1 tl-button h-10 bg-gray-200 text-black mt-2 hover:bg-gray-200">
                             pending
                         </button>
-                        {% endif %}
-                    </div>
+                    {% endif %}
+                </div>
             {% endfor %}
             </div>
         </div>

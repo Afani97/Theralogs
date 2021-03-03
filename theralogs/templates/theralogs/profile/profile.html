@@ -11,9 +11,9 @@
                 <h1 class="text-xl">{{ profile.name }}</h1>
                 <p class="text-lg">{{ profile.user.email }}</p>
                 <p class="text-base">{{ profile.license_id }}</p>
-                <a class="tl-button" href="{% url 'edit_profile' %}">Edit</a>
+                <a class="tl-button bg-blue-200 text-black hover:bg-blue-400 " href="{% url 'edit_profile' %}">Edit</a>
                 {% if request.user.therapist.stripe_payment_method_id != null %}
-                   <a class="tl-button" href="{% url 'update_payment' %}">Update Payment Info</a>
+                   <a class="tl-button bg-blue-200 text-black hover:bg-blue-400 " href="{% url 'update_payment' %}">Update Payment Info</a>
                 {% else %}
                     <a class="tl-button" href="{% url 'update_payment' %}">Add Payment Info</a>
                 {% endif %}
@@ -30,7 +30,7 @@
                 <div class="grid grid-cols-4 gap-4 mt-8">
                     {% for patient in patients %}
                         <p class="col-span-2 font-extrabold text-xl">{{ patient.name }}</p>
-                        <a class="col-span-1 tl-button" href="{% url 'patient_edit' patient.id %}">Edit</a>
+                        <a class="col-span-1 tl-button bg-blue-200 text-black hover:bg-blue-400 " href="{% url 'patient_edit' patient.id %}">Edit</a>
                         <a class="col-span-1 tl-button bg-white hover:bg-white text-black shadow-none" href="{% url 'patient_delete' patient.id %}">Delete</a>
                     {% endfor %}
                 </div>

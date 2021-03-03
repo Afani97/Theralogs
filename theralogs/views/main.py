@@ -130,4 +130,8 @@ def transcribe_webhook(request):
                 )
                 if task:
                     return HttpResponse("Ok")
+            else:
+                session = TLSession.objects.get(id=session_id)
+                session.progress = TLSession.ProgressTypes.FAILED
+                session.save()
     return HttpResponseBadRequest("Session not found")
