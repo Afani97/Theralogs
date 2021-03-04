@@ -40,10 +40,12 @@ const myDropzone = new Dropzone("#my-dropzone", {
         myDropzone.on("sending", function(file, xhr, formData) {
             const patientId = document.getElementById('selected-patient').value;
             formData.append('patient-id', patientId);
+            submitButton.disabled = true;
         });
 
         myDropzone.on("complete", function(file) {
           setTimeout(function() {
+            submitButton.disabled = false;
             myDropzone.removeAllFiles();
             document.getElementById('file-success-msg').classList.toggle("hidden");
             setTimeout(function() {
