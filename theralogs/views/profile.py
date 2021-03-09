@@ -58,12 +58,17 @@ def update_payment(request):
             )
             if stripe_saved:
                 return redirect("profile")
-            response = render(
-                request, "theralogs/profile/update_payment.html", {"form": payment_form}
-            )
-            response.status_code = 400
-            return response
+            else:
+                payment_form.add_error("card_number", "Credit card invalid.")
+                response = render(
+                    request,
+                    "theralogs/profile/update_payment.html",
+                    {"form": payment_form},
+                )
+                response.status_code = 400
+                return response
         else:
+            payment_form.add_error("card_number", "Credit card invalid.")
             response = render(
                 request, "theralogs/profile/update_payment.html", {"form": payment_form}
             )

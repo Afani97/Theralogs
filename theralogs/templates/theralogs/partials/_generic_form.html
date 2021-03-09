@@ -6,6 +6,11 @@
         <label class="block">
             <span class="text-gray-700">{{ field.label }}:</span>
             {{ field | addclass:'tl-input' }}
+            {% for error in field.errors %}
+            <div class="text-red-600">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
         </label>
     {% endfor %}
     <div class="flex content-center justify-between">

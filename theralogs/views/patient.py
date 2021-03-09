@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 
-from theralogs.forms import EditPatientForm, NewPatientForm
+from theralogs.forms import PatientInfoForm
 from theralogs.models import Patient
 
 
@@ -21,9 +21,9 @@ def create_patient(request):
         else:
             return JsonResponse({"msg": "error"}, status=400)
     else:
-        form = NewPatientForm()
+        form = PatientInfoForm()
         if request.method == "POST":
-            form = NewPatientForm(request.POST)
+            form = PatientInfoForm(request.POST)
             if form.is_valid():
                 patient = Patient(
                     name=form.cleaned_data.get("name"),
@@ -45,9 +45,9 @@ def create_patient(request):
 @login_required
 def edit_patient(request, patient_id):
     patient = Patient.objects.get(id=patient_id)
-    form = EditPatientForm(instance=patient)
+    form = PatientInfoForm(instance=patient)
     if request.method == "POST":
-        form = EditPatientForm(request.POST)
+        form = PatientInfoForm(request.POST)
         if form.is_valid():
             patient.name = form.cleaned_data.get("name")
             patient.email = form.cleaned_data.get("email")

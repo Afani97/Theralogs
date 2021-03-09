@@ -39,6 +39,12 @@ class RegisterForm(UserCreationForm, forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "*********", "type": "password"}),
     )
 
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        if not first_name.isalpha():
+            raise ValidationError("Only valid names allowed.")
+        return first_name
+
     class Meta:
         model = User
         fields = (
@@ -90,6 +96,12 @@ class EditProfileForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "example@test.com"}),
     )
 
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        if not name.isalpha():
+            raise ValidationError("Only valid names allowed.")
+        return name
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if (
@@ -137,10 +149,12 @@ class UpdatePaymentForm(forms.Form):
     )
 
 
-class NewPatientForm(forms.ModelForm):
+class PatientInfoForm(forms.ModelForm):
     name = forms.CharField(
         label="First name",
         required=True,
+        min_length=2,
+        max_length=100,
         widget=forms.TextInput(attrs={"placeholder": "Tom"}),
     )
     email = forms.EmailField(
@@ -149,13 +163,12 @@ class NewPatientForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"placeholder": "tom@gmail.com"}),
     )
 
-    class Meta:
-        model = Patient
-        fields = ("name", "email")
-        exclude = ("therapist",)
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        if not name.isalpha():
+            raise ValidationError("Only valid names allowed.")
+        return name
 
-
-class EditPatientForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = ("name", "email")

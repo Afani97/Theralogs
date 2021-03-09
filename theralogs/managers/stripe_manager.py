@@ -16,29 +16,46 @@ class stripe_manager:
     def create_payment_method(cls, therapist, card_dict):
         stripe.api_key = cls.stripe_api_key
         if therapist.stripe_payment_method_id:
-            stripe.PaymentMethod.detach(
-                therapist.stripe_payment_method_id,
+            try:  # Remove previous payment
+                stripe.PaymentMethod.detach(
+                    therapist.stripe_payment_method_id,
+                )
+            except:
+                # TODO: Figure out how to handle this if you need to.
+                pass
+        try:  # Try to create new payment method
+            stripe_payment_method = stripe.PaymentMethod.create(
+                type="card",
+                card={
+                    "number": card_dict["number"],
+                    "exp_month": card_dict["exp_month"],
+                    "exp_year": card_dict["exp_year"],
+                    "cvc": card_dict["cvc"],
+                },
             )
-        stripe_payment_method = stripe.PaymentMethod.create(
-            type="card",
-            card={
-                "number": card_dict["number"],
-                "exp_month": card_dict["exp_month"],
-                "exp_year": card_dict["exp_year"],
-                "cvc": card_dict["cvc"],
-            },
-        )
+        except:
+            return False
+
         therapist.stripe_payment_method_id = stripe_payment_method["id"]
-        stripe.PaymentMethod.attach(
-            therapist.stripe_payment_method_id,
-            customer=therapist.stripe_customer_id,
-        )
-        stripe.Customer.modify(
-            therapist.stripe_customer_id,
-            invoice_settings={
-                "default_payment_method": therapist.stripe_payment_method_id
-            },
-        )
+        try:  # Try to attach new payment method with stripe customer
+            stripe.PaymentMethod.attach(
+                therapist.stripe_payment_method_id,
+                customer=therapist.stripe_customer_id,
+            )
+        except:
+            # TODO: Figure out how to handle this if you need to.
+            pass
+
+        try:  # Update customer default payment method
+            stripe.Customer.modify(
+                therapist.stripe_customer_id,
+                invoice_settings={
+                    "default_payment_method": therapist.stripe_payment_method_id
+                },
+            )
+        except:
+            # TODO: Figure out how to handle this if you need to.
+            pass
         therapist.save()
         return therapist.stripe_payment_method_id is not None
 
@@ -46,14 +63,17 @@ class stripe_manager:
     def charge_customer(cls, recording_time, patient):
         total_charge = int(recording_time * cls.cost_per_minute)
         stripe.api_key = cls.stripe_api_key
-        charge = stripe.PaymentIntent.create(
-            amount=total_charge,
-            currency="usd",
-            customer=patient.therapist.stripe_customer_id,
-            payment_method=patient.therapist.stripe_payment_method_id,
-            off_session=True,
-            confirm=True,
-        )
+        try:
+            charge = stripe.PaymentIntent.create(
+                amount=total_charge,
+                currency="usd",
+                customer=patient.therapist.stripe_customer_id,
+                payment_method=patient.therapist.stripe_payment_method_id,
+                off_session=True,
+                confirm=True,
+            )
+        except:
+            return None
         return charge["id"]
 
     @classmethod

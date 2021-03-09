@@ -37,7 +37,7 @@ class TestProfileViews(TestCase):
         response = self.client.post(
             reverse("edit_profile"),
             {
-                "name": "Tom 2",
+                "name": "Tom",
                 "email": "therapist@test.com",
                 "license_id": str(uuid.uuid4()),
                 "city": "Worcester",
@@ -62,7 +62,7 @@ class TestProfileViews(TestCase):
         response = self.client.put(
             reverse("edit_profile"),
             {
-                "name": "Tom 2",
+                "name": "Tom",
                 "email": second_therapist.user.email,
                 "license_id": str(uuid.uuid4()),
                 "city": "Worcester",

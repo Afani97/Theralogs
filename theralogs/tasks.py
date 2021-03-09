@@ -24,7 +24,6 @@ class background_tasks:
     def send_email_transcript(session_id, transcript_id):
         session = TLSession.objects.get(id=session_id)
         session.transcript_id = transcript_id
-        session.progress = TLSession.ProgressTypes.COMPLETED
         session.save()
 
         response_json = audio_transcribe_manager.get_transcript(
@@ -39,12 +38,17 @@ class background_tasks:
         refund_id = stripe_manager.charge_customer(
             recording_time=total_minutes_of_recording, patient=session.patient
         )
-        session.stripe_refund_id = refund_id
-        session.save()
+        if refund_id:
+            session.stripe_refund_id = refund_id
+            session.progress = TLSession.ProgressTypes.COMPLETED
+            session.save()
 
-        email_manager.send_email(session=session)
-
-        return True
+            email_manager.send_email(session=session)
+            return True
+        else:
+            session.progress = TLSession.ProgressTypes.FAILED
+            session.save()
+            return False
 
     @staticmethod
     @background(schedule=60)

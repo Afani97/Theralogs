@@ -61,13 +61,13 @@ class TestPatientViews(TestCase):
         )
         response = self.client.post(
             reverse("patient_edit", kwargs={"patient_id": patient.id}),
-            {"name": "Jane 2", "email": "jane@test.com"},
+            {"name": "Ane", "email": "jane@test.com"},
         )
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, reverse("profile"))
 
         patient = Patient.objects.get(id=patient.id)
-        self.assertEquals(patient.name, "Jane 2")
+        self.assertEquals(patient.name, "Ane")
 
     def test_edit_patient_failed(self):
         self.client.login(username="therapist@test.com", password="Apple101!")
