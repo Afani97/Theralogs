@@ -1,0 +1,21 @@
+{% extends 'theralogs/base.html' %}
+{% load tl_tags %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto">
+    <h1 class="text-xl mb-4">Delete Your Profile</h1>
+
+    <form method="post" class="mb-8 space-y-10" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p class="text-center text-3xl">Are you sure you want to delete your profile?</p>
+        <p class="text-center">If you do, all your data will be permanently deleted and cannot be recovered.</p>
+        <input class="tl-input" type="password" name="confirm_password" placeholder="Enter your password to confirm" required/>
+
+        <div class="flex justify-between justify-around content-center my-4">
+            <a class="self-center" href="{% url 'edit_profile' %}">Cancel</a>
+            <button class="tl-button bg-red-500 hover:bg-red-800 ml-10" type="submit">Delete</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

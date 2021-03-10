@@ -30,6 +30,7 @@ urlpatterns = [
     path("profile/", profile.view_profile, name="profile"),
     path("profile/edit/", profile.EditProfileView.as_view(), name="edit_profile"),
     path("profile/update_payment/", profile.update_payment, name="update_payment"),
+    path("profile/delete/", profile.delete_profile, name="delete_profile"),
     path("rn/main/", rn.MainView.as_view(), name="rn_main"),
     path("rn/profile/", rn.ProfileView.as_view(), name="rn_profile"),
     path("rn/file-upload/", rn.AudioUploadView.as_view(), name="rn_file_upload"),

@@ -12,4 +12,8 @@
 
     {% include 'theralogs/partials/_generic_form.html' with cancel_url='profile' btn_title='Update profile' %}
 </div>
+
+<div class="fixed left-0 right-0 bottom-3 text-center">
+    <a class="tl-button bg-red-500 hover:bg-red-800" href="{% url 'delete_profile' %}">Delete profile?</a>
+</div>
 {% endblock %}

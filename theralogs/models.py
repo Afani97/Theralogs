@@ -22,6 +22,9 @@ class Therapist(models.Model):
         max_length=200, null=True, blank=True, editable=False
     )
 
+    def __str__(self):
+        return self.name
+
     def get_sessions(self, month, year):
         patients = self.patient_set.all()
         sessions_by_date = {}
@@ -51,6 +54,9 @@ class Patient(models.Model):
     name = encrypt(models.CharField(max_length=200, null=False))
     email = encrypt(models.EmailField(null=False))
 
+    def __str__(self):
+        return self.name
+
 
 class TLSession(models.Model):
     class ProgressTypes(IntEnum):
@@ -76,6 +82,9 @@ class TLSession(models.Model):
     progress = models.IntegerField(
         choices=ProgressTypes.choices(), default=ProgressTypes.PENDING
     )
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.created_at}"
 
     def refund_charge(self):
         if self.refunded is False:

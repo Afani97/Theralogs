@@ -107,3 +107,27 @@ class TestProfileViews(TestCase):
             },
         )
         self.assertEquals(response.status_code, 400)
+
+    def test_delete_profile(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+        response = self.client.post(
+            reverse("delete_profile"),
+            {
+                "confirm_password": "Apple101!",
+            },
+        )
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse("login"))
+
+        therapist = Therapist.objects.filter(id=self.therapist.id).first()
+        self.assertEquals(therapist, None)
+
+    def test_delete_patient_failed(self):
+        self.client.login(username="therapist@test.com", password="Apple101!")
+        response = self.client.post(
+            reverse("delete_profile"),
+            {
+                "confirm_password": "wrong_password",
+            },
+        )
+        self.assertEquals(response.status_code, 400)

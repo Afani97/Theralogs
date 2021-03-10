@@ -1,4 +1,6 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -77,3 +79,17 @@ def update_payment(request):
     return render(
         request, "theralogs/profile/update_payment.html", {"form": payment_form}
     )
+
+
+@login_required
+def delete_profile(request):
+    if request.method == "POST":
+        confirm_password = request.POST.get("confirm_password")
+        user = authenticate(username=request.user.email, password=confirm_password)
+        if user:
+            user = request.user
+            user.delete()
+            return redirect("login")
+        else:
+            return HttpResponse("Invalid password", status=400)
+    return render(request, "theralogs/profile/delete_profile.html")
