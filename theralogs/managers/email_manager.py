@@ -40,3 +40,15 @@ class email_manager:
         with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
             smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
             smtp.send_message(msg)
+
+    @classmethod
+    def send_contact_us_email(cls, dict):
+        msg = EmailMessage()
+        msg["Subject"] = f"{dict['name']} - {dict['email']} asked a question"
+        msg["From"] = config("NAMECHEAP_EMAIL")
+        msg["To"] = config("NAMECHEAP_EMAIL")
+        msg.set_content(dict["question"])
+
+        with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
+            smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
+            smtp.send_message(msg)

@@ -1,0 +1,15 @@
+{% extends 'theralogs/base.html' %}
+{% load tl_tags %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto">
+    <h1 class="text-3xl mb-4">Contact us</h1>
+
+    {% if form.errors %}
+      <p class="text-red-600 font-bold">Error sending email</p>
+    {% endif %}
+
+    {% include 'theralogs/partials/_generic_form.html' with cancel_url='profile' btn_title='Send email' %}
+</div>
+{% endblock %}

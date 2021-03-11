@@ -47,6 +47,7 @@ urlpatterns = [
         rn.ResendSessionPDFView.as_view(),
         name="rn_resend_email",
     ),
+    path("contact-us/", main.contact_us, name="contact_us"),
 ]
 
 # JWT

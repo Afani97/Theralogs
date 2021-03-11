@@ -18,6 +18,7 @@ from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
 from ..tasks import background_tasks
 from ..utils import render_to_pdf, format_transcript_utterances, format_date
+from ..forms import ContactUsForm
 
 
 class LandingPage(TemplateView):
@@ -135,3 +136,22 @@ def transcribe_webhook(request):
                 session.progress = TLSession.ProgressTypes.FAILED
                 session.save()
     return HttpResponseBadRequest("Session not found")
+
+
+def contact_us(request):
+    form = ContactUsForm()
+    if request.user.is_authenticated:
+        form = ContactUsForm(
+            initial={"name": request.user.therapist.name, "email": request.user.email}
+        )
+    if request.method == "POST":
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            email = form.cleaned_data.get("email")
+            question = form.cleaned_data.get("question")
+            task = background_tasks.send_contact_us(name, email, question)
+            if task:
+                return render(request, "theralogs/contact/contact_us_success.html")
+    context = {"form": form}
+    return render(request, "theralogs/contact/contact_us.html", context)

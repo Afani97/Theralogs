@@ -1,0 +1,13 @@
+{% extends 'theralogs/base.html' %}
+{% load tl_tags %}
+
+{% block content %}
+
+<div class="max-w-xl mx-auto">
+    <h1 class="text-3xl mb-4">Contact us sent!</h1>
+
+    <p class="mb-4">Email successfully sent and we will get back to you as soon as possible.</p>
+
+    <a href="{% url 'home' %}" class="tl-button">Go home</a>
+</div>
+{% endblock %}

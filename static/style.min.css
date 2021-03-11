@@ -916,6 +916,10 @@ select {
   justify-content: space-evenly;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 .font-medium {
   font-weight: 500;
 }
@@ -1071,6 +1075,10 @@ select {
   margin-bottom: 2rem;
 }
 
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -1105,6 +1113,10 @@ select {
 
 .max-w-3xl {
   max-width: 48rem;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .focus\:outline-none:focus {
@@ -1243,6 +1255,11 @@ select {
 .text-blue-500 {
   --tw-text-opacity: 1;
   color: rgba(59, 130, 246, var(--tw-text-opacity));
+}
+
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgba(37, 99, 235, var(--tw-text-opacity));
 }
 
 .hover\:text-gray-900:hover {

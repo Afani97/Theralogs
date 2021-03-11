@@ -173,3 +173,24 @@ class PatientInfoForm(forms.ModelForm):
         model = Patient
         fields = ("name", "email")
         exclude = ("therapist",)
+
+
+class ContactUsForm(forms.Form):
+    name = forms.CharField(
+        label="First name",
+        required=True,
+        min_length=2,
+        max_length=100,
+        widget=forms.TextInput(attrs={"placeholder": "Tom"}),
+    )
+    email = forms.EmailField(
+        label="Email",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "tom@gmail.com"}),
+    )
+    question = forms.CharField(
+        label="Your question",
+        required=True,
+        min_length=1,
+        widget=forms.Textarea(attrs={"placeholder": "I have a question about..."}),
+    )

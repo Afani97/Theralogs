@@ -56,3 +56,10 @@ class background_tasks:
         session = TLSession.objects.get(id=session_id)
         email_manager.send_email(session=session)
         return True
+
+    @staticmethod
+    @background(schedule=60)
+    def send_contact_us(name, email, question):
+        email_dict = {"name": name, "email": email, "question": question}
+        email_manager.send_contact_us_email(dict=email_dict)
+        return True
