@@ -22,13 +22,13 @@
 
 <div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-green-500 hidden" id="new-patient-msg">
   <span class="inline-block align-middle mr-8">
-    <b class="capitalize">Congrats!</b> Successfully added a new patient!
+    <b class="capitalize">Congrats!</b> Successfully added a new client!
   </span>
 </div>
 
 <div class="text-white px-6 py-4 border-0 rounded relative mb-4 bg-red-500 hidden" id="error-patient-msg">
   <span class="inline-block align-middle mr-8">
-    <b class="capitalize">Oops!</b> You need to enter a patient name and email to successfully add someone new.
+    <b class="capitalize">Oops!</b> You need to enter a client name and email to successfully add someone new.
   </span>
 </div>
 
@@ -37,20 +37,20 @@
     {% csrf_token %}
     <div class="flex justify-evenly">
         <label class="block mb-2 mr-3">
-            <span>Patient Name</span>
+            <span>Client Name</span>
             <input class="tl-input" type="text" id="patient-name" placeholder="Thomas"/>
         </label>
         <label class="block mb-2 mr-3">
-            <span>Patient Email</span>
+            <span>Client Email</span>
             <input class="tl-input" type="email" id="patient-email" placeholder="thomas@gmail.com"/>
         </label>
-        <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new patient</button>
+        <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new client</button>
     </div>
 </form>
 {% else %}
     <div class="text-white px-6 py-4 mb-10 border-0 rounded max-w-2xl mx-auto bg-blue-500">
       <a href="{% url 'update_payment' %}" class="inline-block align-middle mr-8">
-        Add your payment info in order to start recording audio session with patients
+        Add your payment info in order to start recording audio session with clients
       </a>
     </div>
 {% endif %}
@@ -60,7 +60,7 @@
         {% csrf_token %}
         <div>
             <div class="text-center">
-                <label for="selected-patient">Select Patient</label>
+                <label for="selected-patient">Select Client</label>
             </div>
 
           <div>
@@ -72,7 +72,7 @@
                     <option value="{{ patient.id }}">{{ patient.name }} - {{patient.email}}</option>
                 {% endif %}
             {% empty %}
-             <option value="">Add a new patient above</option>
+             <option value="">Add a new client above</option>
             {% endfor %}
             </select>
           </div>

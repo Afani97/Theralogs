@@ -4,12 +4,12 @@
 {% block content %}
 
 <div class="max-w-xl mx-auto">
-    <h1 class="text-3xl mb-4">Edit Patient</h1>
+    <h1 class="text-3xl mb-4">Edit Client</h1>
 
     {% if form.errors %}
-      <p class="text-red-600 font-bold">Error updating patient</p>
+      <p class="text-red-600 font-bold">Error updating client</p>
     {% endif %}
 
-    {% include 'theralogs/partials/_generic_form.html' with cancel_url='profile' btn_title='Update patient' %}
+    {% include 'theralogs/partials/_generic_form.html' with cancel_url='profile' btn_title='Update client' %}
 </div>
 {% endblock %}
