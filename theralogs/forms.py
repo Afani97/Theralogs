@@ -21,11 +21,6 @@ class RegisterForm(UserCreationForm, forms.ModelForm):
         required=True,
         widget=forms.TextInput(attrs={"placeholder": "Tom"}),
     )
-    license_id = forms.CharField(
-        label="License ID",
-        required=True,
-        widget=forms.TextInput(attrs={"placeholder": "23524525"}),
-    )
 
     password1 = forms.CharField(
         label="Password",
@@ -50,7 +45,6 @@ class RegisterForm(UserCreationForm, forms.ModelForm):
         fields = (
             "first_name",
             "email",
-            "license_id",
             "password1",
             "password2",
         )

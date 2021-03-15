@@ -13,7 +13,7 @@ class Therapist(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
     name = encrypt(models.CharField(max_length=200, null=False))
-    license_id = encrypt(models.CharField(max_length=200, null=False, blank=False))
+    license_id = encrypt(models.CharField(max_length=200, null=True, blank=True))
     created_at = models.DateTimeField(auto_now_add=True)
     stripe_customer_id = models.CharField(
         max_length=200, null=False, blank=False, editable=False

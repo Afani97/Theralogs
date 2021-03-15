@@ -10,7 +10,9 @@
             <div class="self-center grid grid-cols-1 gap-3">
                 <h1 class="text-xl">{{ profile.name }}</h1>
                 <p class="text-lg">{{ profile.user.email }}</p>
-                <p class="text-base">{{ profile.license_id }}</p>
+                 {% if profile.license_id %}
+                    <p class="text-base">{{ profile.license_id }}</p>
+                {% endif %}
                 <a class="tl-button bg-blue-200 text-black hover:bg-blue-400 " href="{% url 'edit_profile' %}">Edit</a>
                 {% if request.user.therapist.stripe_payment_method_id != null %}
                    <a class="tl-button bg-blue-200 text-black hover:bg-blue-400 " href="{% url 'update_payment' %}">Update Payment Info</a>
