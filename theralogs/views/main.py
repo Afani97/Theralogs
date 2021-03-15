@@ -12,7 +12,6 @@ from django.http import (
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView
 
 from ..managers.audio_transcribe_manager import audio_transcribe_manager
 from ..models import Patient, TLSession
@@ -21,8 +20,10 @@ from ..utils import render_to_pdf, format_transcript_utterances, format_date
 from ..forms import ContactUsForm
 
 
-class LandingPage(TemplateView):
-    template_name = "theralogs/landing_page.html"
+def landing_page(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    return render(request, "theralogs/landing_page.html")
 
 
 @login_required

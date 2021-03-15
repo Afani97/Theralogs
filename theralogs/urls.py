@@ -9,7 +9,7 @@ from .views import main, auth, profile, patient, rn
 from .views.rn import CustomTokenObtainPairView
 
 urlpatterns = [
-    path("", main.LandingPage.as_view(), name="landing-page"),
+    path("", main.landing_page, name="landing_page"),
     path("main/", main.main_view, name="home"),
     path("main/file-upload/", main.file_upload, name="file_upload"),
     path("main/pdf/<uuid:session_id>/", main.view_pdf, name="view_pdf"),

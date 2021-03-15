@@ -14,7 +14,7 @@
 
     <header class="text-gray-600 body-font">
         <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-            <a href="{% url 'home' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+            <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round"
                      stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-blue-500 rounded-full"
                      viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
     </header>
 
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container px-5 py-12 mx-auto">
             <div class="flex flex-col text-center w-full mb-20">
                 <h2 class="text-xs text-blue-500 tracking-widest font-medium title-font mb-1">Audio Transcription For
                     Therapists</h2>
@@ -78,6 +78,51 @@
                         making sure only you and your clients view transcriptions alone. </p>
                 </div>
             </div>
+            {% if not request.user.is_authenticated %}
+                <div class="flex justify-center mt-16">
+                    <a class="tl-button" href="{% url 'signup' %}"> Sign me up! </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="container px-5 py-12 mx-auto">
+            <div class="text-xl font-bold text-center">FAQ</div>
+            <button class="font-semibold mb-2">How does it work?</button>
+            <div class="mb-6">
+              <p>Simple! You can either press record on the mobile app to record your session and upload it directly.
+                  Or you can upload an audio file and choose the patient it belongs to!</p>
+            </div>
+
+            <button class="font-semibold mb-2">Can I view the transcriptions?</button>
+            <div class="mb-6">
+              <p>Of course! Only you can view your patient's recordings and you can resend a pdf of the transcription any time it is requested.</p>
+            </div>
+
+            <button class="font-semibold mb-2">How much?</button>
+            <div class="mb-6">
+              <p>Currently it is 9&#162; a minute. And we only charge when a recording is successfully transcribed!</p>
+            </div>
+
+            <button class="font-semibold mb-2">How many patients can I add?</button>
+            <div class="mb-6">
+              <p>As many as you have!</p>
+            </div>
+
+            <button class="font-semibold mb-2">HIPPA compliance</button>
+            <div class="mb-6">
+              <p>We don't want anyone peeking into your patient's data.
+                  That is why we encrypt our database so that no one see's your data but you.</p>
+            </div>
+
+            <button class="font-semibold mb-2">Mobile supported</button>
+            <div class="mb-6">
+              <p>We expect the iOS app live on the App Store soon, and the Android version is shortly on the Play Store afterwords.</p>
+            </div>
+
+            <button class="font-semibold mb-2">Comments/questions</button>
+            <div class="mb-6">
+              <p>If you need any kind of clarification, feel free to contact us through <a class="text-blue-600" href="{% url 'contact_us' %}">here.</a></p>
+            </div>
+
             {% if not request.user.is_authenticated %}
                 <div class="flex justify-center mt-16">
                     <a class="tl-button" href="{% url 'signup' %}"> Sign me up! </a>
