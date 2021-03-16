@@ -52,3 +52,17 @@ class email_manager:
         with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
             smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
             smtp.send_message(msg)
+
+    @classmethod
+    def send_new_customer_notification(cls, dict):
+        msg = EmailMessage()
+        msg["Subject"] = "New user registered"
+        msg["From"] = config("NAMECHEAP_EMAIL")
+        msg["To"] = config("NAMECHEAP_EMAIL")
+        msg.set_content(
+            f"{dict['name']} - {dict['email']} just registered as a new customer"
+        )
+
+        with smtplib.SMTP_SSL("mail.privateemail.com", 465) as smtp:
+            smtp.login(config("NAMECHEAP_EMAIL"), config("NAMECHEAP_PASSWORD"))
+            smtp.send_message(msg)

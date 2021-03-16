@@ -7,6 +7,7 @@ from django.urls import reverse
 from theralogs.managers.stripe_manager import stripe_manager
 from ..forms import RegisterForm, LoginForm
 from ..models import Therapist
+from ..tasks import background_tasks
 
 
 def signup_user(request):
@@ -35,6 +36,7 @@ def signup_user(request):
                     )
                     account.save()
                     login(request, user)
+                    _ = background_tasks.send_new_customer(name, email)
                     return redirect(reverse("home"))
         else:
             response = render(request, "theralogs/auth/signup.html", {"form": form})

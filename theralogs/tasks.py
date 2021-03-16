@@ -63,3 +63,10 @@ class background_tasks:
         email_dict = {"name": name, "email": email, "question": question}
         email_manager.send_contact_us_email(dict=email_dict)
         return True
+
+    @staticmethod
+    @background(schedule=60)
+    def send_new_customer(name, email):
+        email_dict = {"name": name, "email": email}
+        email_manager.send_new_customer_notification(dict=email_dict)
+        return True

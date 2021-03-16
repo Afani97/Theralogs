@@ -5,6 +5,8 @@ from django.urls import reverse
 from theralogs.models import Therapist
 import mock
 
+from theralogs.tasks import background_tasks
+
 
 class TestAuthViews(TestCase):
     def setUp(self):
@@ -33,10 +35,12 @@ class TestAuthViews(TestCase):
         )
         self.assertEquals(response.status_code, 400)
 
+    @mock.patch.object(background_tasks, "send_new_customer")
     @mock.patch("stripe.Customer.create")
-    def test_signup(self, create_mock):
+    def test_signup(self, create_mock, email_mock):
         client = Client()
         create_mock.return_value = {"id": str(uuid.uuid4())}
+        email_mock.return_value = True
         response = client.post(
             reverse("signup"),
             {
@@ -50,10 +54,12 @@ class TestAuthViews(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, reverse("home"))
 
+    @mock.patch.object(background_tasks, "send_new_customer")
     @mock.patch("stripe.Customer.create")
-    def test_signup_error(self, create_mock):
+    def test_signup_error(self, create_mock, email_mock):
         client = Client()
         create_mock.return_value = {"id": str(uuid.uuid4())}
+        email_mock.return_value = True
         response = client.post(
             reverse("signup"),
             {
