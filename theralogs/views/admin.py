@@ -41,9 +41,11 @@ def view_analytics(request):
         .filter(created_at__month=current_date.month)
         .aggregate(session_seconds=Sum("recording_length"))
     )
-    total_hourly_session_for_month = (
-        total_hourly_session_for_month_annotate["session_seconds"] / 3600
-    )
+    total_hourly_session_for_month = 0
+    if total_hourly_session_for_month_annotate["session_seconds"]:
+        total_hourly_session_for_month = (
+            total_hourly_session_for_month_annotate["session_seconds"] / 3600
+        )
     goal_hours_per_month = 2000
     percentage_to_goal = (total_hourly_session_for_month / goal_hours_per_month) * 100
     context = {
