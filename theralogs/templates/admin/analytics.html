@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Theralogs Analytics{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <h1>Analytics for Theralogs</h1>
+  <hr/>
+  <br/>
+
+  <h1>Total therapists: {{therapist_count}}</h1>
+  <h1>Total patients: {{patient_count}}</h1>
+  <h1>Sessions today: {{sessions_today_count}}</h1>
+  <h1>Total session hours for this month: {{total_session_hours}}</h1>
+  <h1>Goal percentage this month: {{percentage_to_goal}}%</h1>
+</div>
+{% endblock %}
