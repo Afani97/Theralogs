@@ -32,30 +32,33 @@
   </span>
 </div>
 
-{% if request.user.therapist.stripe_payment_method_id != null %}
-<form action="new-patient/" method="POST" id="new-patient-form" class="max-w-2xl mx-auto my-10">
-    {% csrf_token %}
-    <div class="flex justify-evenly">
-        <label class="block mb-2 mr-3">
-            <span>Client Name</span>
-            <input class="tl-input" type="text" id="patient-name" placeholder="Thomas"/>
-        </label>
-        <label class="block mb-2 mr-3">
-            <span>Client Email</span>
-            <input class="tl-input" type="email" id="patient-email" placeholder="thomas@gmail.com"/>
-        </label>
-        <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new client</button>
-    </div>
-</form>
-{% else %}
-    <div class="text-white px-6 py-4 mb-10 border-0 rounded max-w-2xl mx-auto bg-blue-500">
-      <a href="{% url 'update_payment' %}" class="inline-block align-middle mr-8">
-        Add your payment info in order to start recording audio session with clients
-      </a>
-    </div>
-{% endif %}
+<div class="hidden sm:block">
+    {% if request.user.therapist.stripe_payment_method_id != null %}
+    <form action="new-patient/" method="POST" id="new-patient-form" class="mb-10 sm:mt-10">
+        {% csrf_token %}
+        <div class="flex justify-evenly">
+            <label class="block mb-2 mr-3">
+                <span>Client Name</span>
+                <input class="tl-input" type="text" id="patient-name" placeholder="Thomas"/>
+            </label>
+            <label class="block mb-2 mr-3">
+                <span>Client Email</span>
+                <input class="tl-input" type="email" id="patient-email" placeholder="thomas@gmail.com"/>
+            </label>
+            <button role="button" class="tl-button h-10 self-center mt-4" type="submit">Add new client</button>
+        </div>
+    </form>
+    {% else %}
+        <div class="text-white px-6 py-4 mb-10 border-0 rounded max-w-2xl mx-auto bg-blue-500">
+          <a href="{% url 'update_payment' %}" class="inline-block align-middle mr-8">
+            Add your payment info in order to start recording audio session with clients
+          </a>
+        </div>
+    {% endif %}
+</div>
 
-<div class="max-w-3xl mx-auto border-2 border-gray-300 rounded-lg p-3">
+
+<div class="border-2 border-gray-300 rounded-lg p-3 mt-5 sm:mt-0">
     <form action="file-upload/" method="POST" id="my-dropzone" class="dropzone">
         {% csrf_token %}
         <div>
@@ -88,10 +91,10 @@
 </div>
 
 
-<div class="max-w-3xl mx-auto my-20">
+<div class="my-10 sm:my-20">
    <div class="flex justify-between ">
         <a href="{% url 'filter_main' prev_month %}" class="tl-button bg-blue-200 text-black hover:bg-blue-400">{{prev_month}}</a>
-        <p>{{curr_month | date:"M-Y"}}</p>
+        <p class="pt-2">{{curr_month | date:"M-Y"}}</p>
         <a href="{% url 'filter_main' next_month %}" class="tl-button bg-blue-200 text-black hover:bg-blue-400">{{next_month}}</a>
     </div>
 </div>
@@ -102,7 +105,7 @@
   </span>
 </div>
 
-<div class="grid grid-cols-3 gap-3 max-w-3xl mx-auto my-10">
+<div class="grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 my-10">
     {% for key, values in sessions.items %}
         <div class="w-full rounded-md bg-gray-50">
             <h1 class="text-xl text-center">{{key | date:"SHORT_DATE_FORMAT"}}</h1>
@@ -132,7 +135,7 @@
             </div>
         </div>
     {% empty %}
-        <p>No entries found for this month</p>
+        <p class="text-lg text-center">No entries found for this month</p>
     {% endfor %}
 </div>
 {% endblock %}

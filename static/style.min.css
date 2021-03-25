@@ -1003,24 +1003,19 @@ select {
   margin-bottom: 1rem;
 }
 
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .my-8 {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
-.mx-8 {
-  margin-left: 2rem;
-  margin-right: 2rem;
-}
-
 .my-10 {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
-}
-
-.my-20 {
-  margin-top: 5rem;
-  margin-bottom: 5rem;
 }
 
 .mx-auto {
@@ -1040,8 +1035,16 @@ select {
   margin-top: 0.5rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .mr-3 {
@@ -1056,12 +1059,12 @@ select {
   margin-top: 1rem;
 }
 
-.mr-4 {
-  margin-right: 1rem;
-}
-
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .mr-5 {
@@ -1108,20 +1111,12 @@ select {
   margin-bottom: 5rem;
 }
 
-.max-w-lg {
-  max-width: 32rem;
-}
-
-.max-w-xl {
-  max-width: 36rem;
+.max-w-sm {
+  max-width: 24rem;
 }
 
 .max-w-2xl {
   max-width: 42rem;
-}
-
-.max-w-3xl {
-  max-width: 48rem;
 }
 
 .min-h-screen {
@@ -1148,6 +1143,11 @@ select {
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .px-3 {
@@ -1183,6 +1183,10 @@ select {
 .py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
+}
+
+.pt-2 {
+  padding-top: 0.5rem;
 }
 
 .static {
@@ -1324,10 +1328,6 @@ select {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -1407,14 +1407,48 @@ select {
 }
 
 @media (min-width: 640px) {
+  .sm\:block {
+    display: block;
+  }
+
   .sm\:text-xl {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
 
+  .sm\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
   .sm\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
+  }
+
+  .sm\:my-20 {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+  }
+
+  .sm\:mt-0 {
+    margin-top: 0px;
+  }
+
+  .sm\:mr-4 {
+    margin-right: 1rem;
+  }
+
+  .sm\:mt-10 {
+    margin-top: 2.5rem;
+  }
+
+  .sm\:max-w-xl {
+    max-width: 36rem;
+  }
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1435,8 +1469,16 @@ select {
     margin-left: auto;
   }
 
+  .md\:max-w-3xl {
+    max-width: 48rem;
+  }
+
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
