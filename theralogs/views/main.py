@@ -26,6 +26,10 @@ def landing_page(request):
     return render(request, "theralogs/landing_page.html")
 
 
+def privacy_policy(request):
+    return render(request, "theralogs/contact/privacy_policy.html")
+
+
 @login_required
 def main_view(request, filter_date=None):
     current_date = datetime.now()

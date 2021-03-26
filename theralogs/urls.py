@@ -49,6 +49,7 @@ urlpatterns = [
         name="rn_resend_email",
     ),
     path("contact-us/", main.contact_us, name="contact_us"),
+    path("privacy-policy/", main.privacy_policy, name="privacy_policy"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
