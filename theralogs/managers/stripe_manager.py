@@ -4,7 +4,7 @@ import stripe
 
 class stripe_manager:
     stripe_api_key = config("STRIPE_SECRET")
-    cost_per_minute = 190  # Should be 9 for prod
+    cost_per_minute = 9  # Should be 9 for prod
 
     @classmethod
     def register_customer(cls, email):
