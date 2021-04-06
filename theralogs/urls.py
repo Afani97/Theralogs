@@ -13,9 +13,6 @@ urlpatterns = [
     path("main/", main.main_view, name="home"),
     path("main/file-upload/", main.file_upload, name="file_upload"),
     path("main/pdf/<uuid:session_id>/", main.view_pdf, name="view_pdf"),
-    path(
-        "main/resend-email/<uuid:session_id>/", main.resend_email, name="resend_email"
-    ),
     path("main/aai-webhook", main.transcribe_webhook, name="aai-webhook"),
     path("main/<str:filter_date>/", main.main_view, name="filter_main"),
     path("signup/", auth.signup_user, name="signup"),
@@ -42,11 +39,6 @@ urlpatterns = [
         "rn/patient/<uuid:patient_id>/profile/",
         rn.ClientProfileView.as_view(),
         name="rn_patient_profile",
-    ),
-    path(
-        "rn/sessions/<uuid:session_id>/resend/",
-        rn.ResendSessionPDFView.as_view(),
-        name="rn_resend_email",
     ),
     path("contact-us/", main.contact_us, name="contact_us"),
     path("privacy-policy/", main.privacy_policy, name="privacy_policy"),

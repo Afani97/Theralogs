@@ -90,16 +90,3 @@ class ClientProfileView(APIView):
             serializer = TLSessionSerializer(sessions, many=True)
             return Response(serializer.data)
         return JsonResponse({"msg": "error"})
-
-
-class ResendSessionPDFView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, session_id):
-        if session_id:
-            session = TLSession.objects.filter(id=session_id).exists()
-            if session:
-                task = background_tasks.resend_email_to_patient(str(session_id))
-                if task:
-                    return JsonResponse({"msg": "success"})
-        return JsonResponse({"msg": "error"}, status=400)

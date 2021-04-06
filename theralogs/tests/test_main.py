@@ -136,23 +136,7 @@ class TestMainViews(TestCase):
         )
         self.assertEquals(response.status_code, 400)
 
-    @mock.patch.object(background_tasks, "resend_email_to_patient")
-    def test_resend_email(self, resend_mock):
-        resend_mock.return_value = True
-        self.client.login(username="therapist@test.com", password="Apple101!")
-        response = self.client.get(
-            reverse("resend_email", kwargs={"session_id": self.session.id})
-        )
-        self.assertEquals(response.status_code, 200)
-
-    def test_resend_email_failed(self):
-        self.client.login(username="therapist@test.com", password="Apple101!")
-        response = self.client.get(
-            reverse("resend_email", kwargs={"session_id": uuid.uuid4()})
-        )
-        self.assertEquals(response.status_code, 400)
-
-    @mock.patch.object(background_tasks, "send_email_transcript")
+    @mock.patch.object(background_tasks, "save_transcript")
     def test_transcribe_webhook(self, send_email_mock):
         send_email_mock.return_value = True
         self.client.login(username="therapist@test.com", password="Apple101!")
@@ -164,7 +148,7 @@ class TestMainViews(TestCase):
         )
         self.assertEquals(response.status_code, 200)
 
-    @mock.patch.object(background_tasks, "send_email_transcript")
+    @mock.patch.object(background_tasks, "save_transcript")
     def test_transcribe_webhook_not_complete_failed(self, send_email_mock):
         send_email_mock.return_value = True
         self.client.login(username="therapist@test.com", password="Apple101!")

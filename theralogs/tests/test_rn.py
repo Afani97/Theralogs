@@ -151,23 +151,3 @@ class TestRNViews(TestCase):
             reverse("rn_patient_profile", kwargs={"patient_id": uuid.uuid4()})
         )
         self.assertEquals(response.status_code, 401)
-
-    @mock.patch.object(background_tasks, "resend_email_to_patient")
-    def test_resend_session(self, send_email_mock):
-        send_email_mock.return_value = True
-        api_client = APIClient()
-        api_client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
-
-        response = api_client.get(
-            reverse("rn_resend_email", kwargs={"session_id": self.session.id})
-        )
-        self.assertEquals(response.status_code, 200)
-
-    def test_resend_session_failed(self):
-        api_client = APIClient()
-        api_client.credentials(HTTP_AUTHORIZATION="Bearer " + self.token)
-
-        response = api_client.get(
-            reverse("rn_resend_email", kwargs={"session_id": uuid.uuid4()})
-        )
-        self.assertEquals(response.status_code, 400)

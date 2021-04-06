@@ -102,28 +102,3 @@ document.getElementById('new-patient-form').addEventListener('submit', function(
     })
     .catch(error => console.log(error))
 })
-
-const sendButtons = document.getElementsByClassName('send-email-btn');
-for (var i = 0; i < sendButtons.length; i++) {
-  sendButtons[i].addEventListener('click', function(e) {
-    e.preventDefault()
-
-    const id = e.target.id
-
-    fetch(`resend-email/${id}/`, {
-      method: 'GET',
-      credentials: 'include',
-      mode: 'same-origin',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-    })
-    .then(resp => resp.json())
-    .then(resp => {
-        document.getElementById('email-sent-msg').classList.toggle("hidden");
-        setTimeout(function() {
-            document.getElementById('email-sent-msg').classList.toggle("hidden");
-        }, 3000);
-    })
-  });
-}

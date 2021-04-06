@@ -110,17 +110,6 @@ def view_pdf(request, session_id):
     return redirect(reverse("home"))
 
 
-@login_required
-def resend_email(request, session_id):
-    if session_id:
-        session = TLSession.objects.filter(id=session_id).exists()
-        if session:
-            task = background_tasks.resend_email_to_patient(str(session_id))
-            if task:
-                return JsonResponse({"msg": "success"})
-    return JsonResponse({"msg": "error"}, status=400)
-
-
 @csrf_exempt
 def transcribe_webhook(request):
     if request.GET.getlist("session_id"):
@@ -131,9 +120,7 @@ def transcribe_webhook(request):
             status = payload["status"]
             if status == "completed":
                 transcript_id = payload["transcript_id"]
-                task = background_tasks.send_email_transcript(
-                    str(session_id), transcript_id
-                )
+                task = background_tasks.save_transcript(str(session_id), transcript_id)
                 if task:
                     return HttpResponse("Ok")
             else:
