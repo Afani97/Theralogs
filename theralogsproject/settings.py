@@ -62,7 +62,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django_otp.middleware.OTPMiddleware",
-    "csp.middleware.CSPMiddleware",
+    # "csp.middleware.CSPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -181,6 +181,7 @@ if not DEBUG:
     CSP_FRAME_ANCESTORS = ("'none'",)
     CSP_FORM_ACTION = ("'self'",)
     CSP_INCLUDE_NONCE_IN = ("script-src",)
+    CSP_MEDIA_SRC = ("'self'",)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

@@ -1,3 +1,48 @@
+const recordAudio = () => {
+    return  new Promise(async resolve => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks = [];
+
+        mediaRecorder.addEventListener("dataavailable", event => {
+          audioChunks.push(event.data);
+        });
+
+        const start = () => mediaRecorder.start();
+
+        const stop = () =>
+          new Promise(resolve => {
+            mediaRecorder.addEventListener("stop", () => {
+              const audioBlob = new Blob(audioChunks);
+              const audioFile = new File([audioBlob], "audio.wav");
+              resolve({ audioFile });
+            });
+
+            mediaRecorder.stop();
+          });
+
+        resolve({ start, stop });
+    });
+}
+
+
+let recorder;
+
+document.getElementById('start-recording-btn').addEventListener('click', async function(e) {
+    recorder = await recordAudio();
+    if (recorder !== null) {
+        recorder.start();
+    }
+})
+
+document.getElementById('stop-recording-btn').addEventListener('click', async function(e) {
+    if (recorder !== null) {
+        const audio = await recorder.stop();
+        myDropzone.addFile(audio.audioFile)
+    }
+})
+
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {

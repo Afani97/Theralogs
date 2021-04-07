@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'dropzone/dropzone.min.css' %}">
     <script src="{% static 'dropzone/dropzone.min.js' %}"></script>
 
+    <script src="{% static 'polyfill.js' %}" type="module" defer></script>
     <script src="{% static 'main.js' %}" defer></script>
 {% endblock %}
 
@@ -89,6 +90,15 @@
     </div>
 
 </div>
+
+<div class="flex items-center">
+    <button id="start-recording-btn" class="tl-button mt-2 mx-auto">Start Recording</button>
+</div>
+
+<div class="flex items-center">
+    <button id="stop-recording-btn" class="tl-button bg-red-500 hover:bg-red-800 mt-2 mx-auto">Stop Recording</button>
+</div>
+
 
 
 <div class="my-10 sm:my-20">
