@@ -30,13 +30,15 @@ let recorder;
 
 document.getElementById('start-recording-btn').addEventListener('click', async function(e) {
     recorder = await recordAudio();
-    if (recorder !== null) {
+    if (recorder !== null && myDropzone.files.length === 0) {
         recorder.start();
+        document.getElementById('stop-recording-btn').classList.remove("hidden")
+        document.getElementById('start-recording-btn').classList.add("hidden")
     }
 })
 
 document.getElementById('stop-recording-btn').addEventListener('click', async function(e) {
-    if (recorder !== null) {
+    if (recorder !== null && myDropzone.files.length === 0) {
         const audio = await recorder.stop();
         myDropzone.addFile(audio.audioFile)
     }
@@ -70,6 +72,7 @@ const myDropzone = new Dropzone("#my-dropzone", {
     dictDefaultMessage: 'Drop a file here to upload',
     autoProcessQueue: false,
     addRemoveLinks: true,
+    uploadMultiple: false,
     init: function() {
         const submitButton = document.querySelector("#upload-btn")
         const myDropzone = this;
@@ -82,13 +85,30 @@ const myDropzone = new Dropzone("#my-dropzone", {
             }
         });
 
+        myDropzone.on("addedfile", function(file) {
+            submitButton.classList.remove("hidden");
+            document.getElementById('start-recording-btn').classList.add("hidden")
+            document.getElementById('stop-recording-btn').classList.add("hidden")
+        });
+
+        myDropzone.on("maxfilesexceeded", function(file) {
+            myDropzone.removeFile(file)
+        });
+
+        myDropzone.on("removedfile", function(file) {
+            if (myDropzone.files.length === 0) {
+                submitButton.classList.add("hidden");
+                document.getElementById('start-recording-btn').classList.remove("hidden")
+            }
+        });
+
         myDropzone.on("sending", function(file, xhr, formData) {
             const patientId = document.getElementById('selected-patient').value;
             formData.append('patient-id', patientId);
             submitButton.disabled = true;
         });
 
-        myDropzone.on("complete", function(file) {
+        myDropzone.on("success", function(file) {
           setTimeout(function() {
             submitButton.disabled = false;
             myDropzone.removeAllFiles();
