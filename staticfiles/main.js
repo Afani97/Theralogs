@@ -27,6 +27,70 @@ const recordAudio = () => {
 
 
 let recorder;
+let timer = document.getElementById('stopwatch');
+
+let hr = 0;
+let min = 0;
+let sec = 0;
+let stoptime = true;
+
+function startTimer() {
+  timer.classList.remove("hidden");
+  if (stoptime == true) {
+        stoptime = false;
+        timerCycle();
+    }
+}
+
+function stopTimer() {
+  timer.classList.add("hidden");
+  if (stoptime == false) {
+    stoptime = true;
+  }
+  resetTimer();
+}
+
+function timerCycle() {
+    if (stoptime == false) {
+    sec = parseInt(sec);
+    min = parseInt(min);
+    hr = parseInt(hr);
+
+    sec = sec + 1;
+
+    if (sec == 60) {
+      min = min + 1;
+      sec = 0;
+    }
+    if (min == 60) {
+      hr = hr + 1;
+      min = 0;
+      sec = 0;
+    }
+
+    if (sec < 10 || sec == 0) {
+      sec = '0' + sec;
+    }
+    if (min < 10 || min == 0) {
+      min = '0' + min;
+    }
+    if (hr < 10 || hr == 0) {
+      hr = '0' + hr;
+    }
+
+    timer.innerHTML = hr + ':' + min + ':' + sec;
+
+    setTimeout("timerCycle()", 1000);
+  }
+}
+
+function resetTimer() {
+    timer.innerHTML = "00:00:00";
+    stoptime = true;
+    hr = 0;
+    sec = 0;
+    min = 0;
+}
 
 document.getElementById('start-recording-btn').addEventListener('click', async function(e) {
     recorder = await recordAudio();
@@ -34,6 +98,7 @@ document.getElementById('start-recording-btn').addEventListener('click', async f
         recorder.start();
         document.getElementById('stop-recording-btn').classList.remove("hidden")
         document.getElementById('start-recording-btn').classList.add("hidden")
+        startTimer();
     }
 })
 
@@ -41,6 +106,7 @@ document.getElementById('stop-recording-btn').addEventListener('click', async fu
     if (recorder !== null && myDropzone.files.length === 0) {
         const audio = await recorder.stop();
         myDropzone.addFile(audio.audioFile)
+        stopTimer();
     }
 })
 
@@ -86,6 +152,7 @@ const myDropzone = new Dropzone("#my-dropzone", {
         });
 
         myDropzone.on("addedfile", function(file) {
+            stopTimer();
             submitButton.classList.remove("hidden");
             document.getElementById('start-recording-btn').classList.add("hidden")
             document.getElementById('stop-recording-btn').classList.add("hidden")
