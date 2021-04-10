@@ -146,6 +146,28 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Content Security Policy
+CSP_DEFAULT_SRC = (
+    "'self'",
+    "blob:",
+)
+CSP_STYLE_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://cdn.jsdelivr.net",
+    "https://cdnjs.cloudflare.com",
+    "'unsafe-eval'",
+)
+CSP_IMG_SRC = ("'self'",)
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
+CSP_OBJECT_SRC = ("'none'",)
+CSP_BASE_URI = ("'none'",)
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_FORM_ACTION = ("'self'",)
+CSP_INCLUDE_NONCE_IN = ("script-src",)
+CSP_MEDIA_SRC = ("'self'",)
+
 # Security
 if not DEBUG:
     import sentry_sdk
@@ -169,18 +191,6 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-    # Content Security Policy
-    CSP_DEFAULT_SRC = ("'none'",)
-    CSP_STYLE_SRC = ("'self'",)
-    CSP_SCRIPT_SRC = ("'self'",)
-    CSP_IMG_SRC = ("'self'",)
-    CSP_FONT_SRC = ("'self'",)
-    CSP_CONNECT_SRC = ("'self'",)
-    CSP_OBJECT_SRC = ("'none'",)
-    CSP_BASE_URI = ("'none'",)
-    CSP_FRAME_ANCESTORS = ("'none'",)
-    CSP_FORM_ACTION = ("'self'",)
-    CSP_INCLUDE_NONCE_IN = ("script-src",)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
